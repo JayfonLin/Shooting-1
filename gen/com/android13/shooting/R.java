@@ -26,38 +26,40 @@ public final class R {
         public static final int hoop05=0x7f02000c;
         public static final int ic_launcher=0x7f02000d;
         public static final int leaf=0x7f02000e;
-        public static final int music_game=0x7f02000f;
-        public static final int option=0x7f020010;
-        public static final int option_d=0x7f020011;
-        public static final int restart_selected=0x7f020012;
-        public static final int restart_unselected=0x7f020013;
-        public static final int shooting=0x7f020014;
-        public static final int sound_ballhit=0x7f020015;
-        public static final int sound_wind=0x7f020016;
-        public static final int start_selected=0x7f020017;
-        public static final int start_unselected=0x7f020018;
-        public static final int time0=0x7f020019;
-        public static final int time1=0x7f02001a;
-        public static final int time2=0x7f02001b;
-        public static final int time3=0x7f02001c;
-        public static final int time4=0x7f02001d;
-        public static final int time5=0x7f02001e;
-        public static final int time6=0x7f02001f;
-        public static final int time7=0x7f020020;
-        public static final int time8=0x7f020021;
-        public static final int time9=0x7f020022;
+        public static final int option=0x7f02000f;
+        public static final int option_d=0x7f020010;
+        public static final int restart_selected=0x7f020011;
+        public static final int restart_unselected=0x7f020012;
+        public static final int shooting=0x7f020013;
+        public static final int start_selected=0x7f020014;
+        public static final int start_unselected=0x7f020015;
+        public static final int time0=0x7f020016;
+        public static final int time1=0x7f020017;
+        public static final int time2=0x7f020018;
+        public static final int time3=0x7f020019;
+        public static final int time4=0x7f02001a;
+        public static final int time5=0x7f02001b;
+        public static final int time6=0x7f02001c;
+        public static final int time7=0x7f02001d;
+        public static final int time8=0x7f02001e;
+        public static final int time9=0x7f02001f;
     }
     public static final class id {
-        public static final int button1=0x7f050000;
-        public static final int button2=0x7f050001;
-        public static final int button3=0x7f050002;
-        public static final int button4=0x7f050003;
+        public static final int button1=0x7f060000;
+        public static final int button2=0x7f060001;
+        public static final int button3=0x7f060002;
+        public static final int button4=0x7f060003;
     }
     public static final class layout {
         public static final int level_selector=0x7f030000;
         public static final int start_layout=0x7f030001;
     }
+    public static final class raw {
+        public static final int music_game=0x7f040000;
+        public static final int sound_ballhit=0x7f040001;
+        public static final int sound_wind=0x7f040002;
+    }
     public static final class string {
-        public static final int app_name=0x7f040000;
+        public static final int app_name=0x7f050000;
     }
 }
