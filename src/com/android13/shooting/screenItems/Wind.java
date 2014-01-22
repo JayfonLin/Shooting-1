@@ -3,6 +3,8 @@ package com.android13.shooting.screenItems;
 import java.util.Iterator;
 import java.util.Vector;
 
+import com.android13.shooting.PlaySound;
+
 import android.graphics.Canvas;
 import android.graphics.Paint;
 
@@ -15,6 +17,7 @@ public class Wind extends ScreenItem {
 	private int state;
 	private float speedX;
 	private long timer;
+	private long soundTimer;
 	private long postTime;
 	private Vector<Leaf> leaves;
 
@@ -50,6 +53,7 @@ public class Wind extends ScreenItem {
 		}
 		postTime = System.currentTimeMillis();
 		timer = 0;
+		soundTimer = 0;
 	}
 
 	// 启动风这个对象，初始方向是自左向右
@@ -72,12 +76,22 @@ public class Wind extends ScreenItem {
 	protected void logic() {
 		long curTime = System.currentTimeMillis();
 		timer += curTime - postTime;
+		soundTimer += curTime - postTime;
 		if (timer >= 10000) {
 			timer = 0;
 			if (state != WIND_STOP) {
 				change_direction();
 			}
 		}
+		if (soundTimer >= 3000) {
+			soundTimer = 0;
+			if (PlaySound.soundPool == null) {
+				System.out.println("error");
+			} else if (state != WIND_STOP) {
+				PlaySound.play("wind", 0);
+			}
+		}
+
 		postTime = curTime;
 	}
 

@@ -57,6 +57,7 @@ public class Backboard extends ScreenItem {
 		instance = null;
 		super.release();
 	}
+	@Override
 	public void logic(){
 		//如果是第3关及以上的关卡，篮板左右移动
 		if (Game.getLevel() >= 3){
