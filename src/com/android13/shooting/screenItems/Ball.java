@@ -164,16 +164,16 @@ public class Ball extends ScreenItem {
 				hoop.goalCount = 0;
 				hoop.missCount++;
 			}
-
 			reset();
 			return;
 		}
-
+		// Log.d("collide", "unShoot:"+Boolean.toString(unShoot));
 		if (!unShoot) {
 			changeSpeedY += (Game.Constant.GRAVITY * Game.Constant.MOVE_TIME);
 			speedY += changeSpeedY;
 			isDownWard = (speedY > 0f) ? true : false;
 			currentFrame = (currentFrame + 1) % 5;
+			// Log.d("collide", "isDownWard:" + Boolean.toString(isDownWard));
 			if (isDownWard) {
 				/**
 				 * 与篮框内侧碰撞
@@ -284,10 +284,27 @@ public class Ball extends ScreenItem {
 				/**
 				 * 与场地上边界碰撞
 				 */
+				// Log.d("collide",
+				// "temp_is_goal :"+Boolean.toString(temp_is_goal));
+				// Log.d("collide",
+				// "collideHoop  :"+Boolean.toString(collideHoop));
+				// Log.d("collide",
+				// "isDownWard   :"+Boolean.toString(isDownWard));
+				// Log.d("collide",
+				// "collideGround:"+Boolean.toString(collideGround));
+				// Log.d("collide", "y:"+Float.toString(y));
+				// Log.d("collide",
+				// "UPPER:"+Float.toString(Game.Constant.COURT_UPPER_BOUND));
+				// Log.d("collide",
+				// "Upper-y:"+Float.toString(Game.Constant.COURT_UPPER_BOUND - y
+				// ));
+				// Log.d("collide",
+				// "Radius:"+Float.toString(Game.Constant.BALL_RADIUS *
+				// scaleFactor ));
 				if ((temp_is_goal || !collideHoop)
 						&& isDownWard
 						&& !collideGround
-						&& y < Game.Constant.COURT_UPPER_BOUND
+						// && y < Game.Constant.COURT_UPPER_BOUND
 						&& Game.Constant.COURT_UPPER_BOUND - y <= Game.Constant.BALL_RADIUS
 								* scaleFactor) {
 					playSound();
@@ -300,7 +317,7 @@ public class Ball extends ScreenItem {
 				 */
 				if (!collideMiddle
 						&& isDownWard
-						&& y < Game.Constant.COURT_MIDDLE_BOUND
+						// && y < Game.Constant.COURT_MIDDLE_BOUND
 						&& Game.Constant.COURT_MIDDLE_BOUND - y <= Game.Constant.BALL_RADIUS
 								* scaleFactor) {
 					playSound();
@@ -352,10 +369,12 @@ public class Ball extends ScreenItem {
 	}
 
 	void playSound() {
-		if (PlaySound.soundPool == null) {
-			System.out.println("error");
-		} else {
-			PlaySound.play("ball", 0);
+		if (Game.Constant.SOUND_EFFECT_ON) {
+			if (PlaySound.soundPool == null) {
+				System.out.println("error");
+			} else {
+				PlaySound.play("ball", 0);
+			}
 		}
 	}
 }

@@ -65,17 +65,19 @@ Callback, Runnable, OnTouchListener{
 	@Override
 	public void run() {
 		while(flag) {
-			long start = System.currentTimeMillis();
-
-			Game.refreshScreen(surfaceHolder, canvas, paint);
-			
-			long end = System.currentTimeMillis();
-			try {
-				//控制FPS 为标准的 30
-				if(end - start < 30)
-					Thread.sleep(30 - (end - start));
-			} catch (InterruptedException e) {
-				e.printStackTrace();
+			if (!Game.Constant.GAME_PAUSE){
+				long start = System.currentTimeMillis();
+	
+				Game.refreshScreen(surfaceHolder, canvas, paint);
+				
+				long end = System.currentTimeMillis();
+				try {
+					//控制FPS 为标准的 30
+					if(end - start < 30)
+						Thread.sleep(30 - (end - start));
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
 			}
 		}
 	}

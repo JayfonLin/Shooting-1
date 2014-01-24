@@ -10,6 +10,9 @@ package com.android13.shooting;
 public final class R {
     public static final class attr {
     }
+    public static final class color {
+        public static final int transparent=0x7f060000;
+    }
     public static final class drawable {
         public static final int backboard=0x7f020000;
         public static final int background=0x7f020001;
@@ -18,41 +21,63 @@ public final class R {
         public static final int ball002=0x7f020004;
         public static final int ball003=0x7f020005;
         public static final int ball004=0x7f020006;
-        public static final int home_view_bg=0x7f020007;
-        public static final int hoop00=0x7f020008;
-        public static final int hoop01=0x7f020009;
-        public static final int hoop03=0x7f02000a;
-        public static final int hoop04=0x7f02000b;
-        public static final int hoop05=0x7f02000c;
-        public static final int ic_launcher=0x7f02000d;
-        public static final int leaf=0x7f02000e;
-        public static final int option=0x7f02000f;
-        public static final int option_d=0x7f020010;
-        public static final int restart_selected=0x7f020011;
-        public static final int restart_unselected=0x7f020012;
-        public static final int shooting=0x7f020013;
-        public static final int start_selected=0x7f020014;
-        public static final int start_unselected=0x7f020015;
-        public static final int time0=0x7f020016;
-        public static final int time1=0x7f020017;
-        public static final int time2=0x7f020018;
-        public static final int time3=0x7f020019;
-        public static final int time4=0x7f02001a;
-        public static final int time5=0x7f02001b;
-        public static final int time6=0x7f02001c;
-        public static final int time7=0x7f02001d;
-        public static final int time8=0x7f02001e;
-        public static final int time9=0x7f02001f;
+        public static final int cancel_btn=0x7f020007;
+        public static final int cancel_btn_selected=0x7f020008;
+        public static final int cancel_btn_unselected=0x7f020009;
+        public static final int home_view_bg=0x7f02000a;
+        public static final int hoop00=0x7f02000b;
+        public static final int hoop01=0x7f02000c;
+        public static final int hoop03=0x7f02000d;
+        public static final int hoop04=0x7f02000e;
+        public static final int hoop05=0x7f02000f;
+        public static final int ic_launcher=0x7f020010;
+        public static final int leaf=0x7f020011;
+        public static final int option=0x7f020012;
+        public static final int option_selected=0x7f020013;
+        public static final int option_unselected=0x7f020014;
+        public static final int restart_btn=0x7f020015;
+        public static final int restart_selected=0x7f020016;
+        public static final int restart_unselected=0x7f020017;
+        public static final int shooting=0x7f020018;
+        public static final int start_btn=0x7f020019;
+        public static final int start_selected=0x7f02001a;
+        public static final int start_unselected=0x7f02001b;
+        public static final int sure_btn=0x7f02001c;
+        public static final int sure_btn_selected=0x7f02001d;
+        public static final int sure_btn_unselected=0x7f02001e;
+        public static final int time0=0x7f02001f;
+        public static final int time1=0x7f020020;
+        public static final int time2=0x7f020021;
+        public static final int time3=0x7f020022;
+        public static final int time4=0x7f020023;
+        public static final int time5=0x7f020024;
+        public static final int time6=0x7f020025;
+        public static final int time7=0x7f020026;
+        public static final int time8=0x7f020027;
+        public static final int time9=0x7f020028;
+        public static final int train_bg=0x7f020029;
+        public static final int volume_off=0x7f02002a;
+        public static final int volume_on=0x7f02002b;
     }
     public static final class id {
-        public static final int button1=0x7f060000;
-        public static final int button2=0x7f060001;
-        public static final int button3=0x7f060002;
-        public static final int button4=0x7f060003;
+        public static final int button1=0x7f080005;
+        public static final int button2=0x7f080006;
+        public static final int button3=0x7f080007;
+        public static final int button4=0x7f080008;
+        public static final int image_cancel=0x7f080004;
+        public static final int image_game_music=0x7f080001;
+        public static final int image_sound_effect=0x7f080002;
+        public static final int image_sure=0x7f080003;
+        public static final int replayIV=0x7f08000b;
+        public static final int resumeIV=0x7f08000a;
+        public static final int settingsimageview=0x7f080009;
+        public static final int textView1=0x7f080000;
     }
     public static final class layout {
-        public static final int level_selector=0x7f030000;
-        public static final int start_layout=0x7f030001;
+        public static final int audio_settings_layout=0x7f030000;
+        public static final int level_selector=0x7f030001;
+        public static final int pause_popwin_layout=0x7f030002;
+        public static final int start_layout=0x7f030003;
     }
     public static final class raw {
         public static final int music_game=0x7f040000;
@@ -61,5 +86,8 @@ public final class R {
     }
     public static final class string {
         public static final int app_name=0x7f050000;
+    }
+    public static final class style {
+        public static final int transparent=0x7f070000;
     }
 }

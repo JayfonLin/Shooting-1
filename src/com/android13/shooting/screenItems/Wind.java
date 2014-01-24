@@ -1,8 +1,10 @@
 package com.android13.shooting.screenItems;
 
 import java.util.Iterator;
+import java.util.Random;
 import java.util.Vector;
 
+import com.android13.shooting.Game;
 import com.android13.shooting.PlaySound;
 
 import android.graphics.Canvas;
@@ -20,7 +22,7 @@ public class Wind extends ScreenItem {
 	private long soundTimer;
 	private long postTime;
 	private Vector<Leaf> leaves;
-
+	private Random random = new Random();
 	private static Wind instance;
 
 	// 实现单例模式
@@ -85,10 +87,12 @@ public class Wind extends ScreenItem {
 		}
 		if (soundTimer >= 3000) {
 			soundTimer = 0;
-			if (PlaySound.soundPool == null) {
-				System.out.println("error");
-			} else if (state != WIND_STOP) {
-				PlaySound.play("wind", 0);
+			if (Game.Constant.SOUND_EFFECT_ON) {
+				if (PlaySound.soundPool == null) {
+					System.out.println("error");
+				} else if (state != WIND_STOP) {
+					PlaySound.play("wind", 0);
+				}
 			}
 		}
 

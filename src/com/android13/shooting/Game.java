@@ -13,6 +13,7 @@ import com.android13.shooting.screenItems.ScreenItem;
 import com.android13.shooting.screenItems.Wind;
 
 import android.app.Activity;
+import android.content.SharedPreferences;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.PaintFlagsDrawFilter;
@@ -31,6 +32,7 @@ public class Game {
 	private static List<ScreenItem> sortedItems;
 	private static int level;
 	public static int goal_count = 0;
+
 	// public static ArrayList<Ball> balls;
 	public static int getLevel() {
 		return level;
@@ -39,7 +41,6 @@ public class Game {
 	public static void init(Activity activity, int lv) {
 
 		level = lv;
-
 		/** 根据屏幕实际参数，初始化所有距离相关的常量 */
 		DisplayMetrics dm = new DisplayMetrics();
 		activity.getWindowManager().getDefaultDisplay().getMetrics(dm);
@@ -95,13 +96,13 @@ public class Game {
 		/** 根据 z 坐标对 ScreenItem 排序 */
 		Collections.sort(sortedItems);
 	}
-	
-	public static void release(){
-		for(int i = 0; i < sortedItems.size() ; i++){
+
+	public static void release() {
+		for (int i = 0; i < sortedItems.size(); i++) {
 			sortedItems.get(i).release();
 		}
 	}
-	
+
 	/**
 	 * 定义了游戏的很多全局常量，如视野内三维空间的坐标范围
 	 */
@@ -131,7 +132,7 @@ public class Game {
 			TOP_HOOP_PY = HOOP_Y - HOOP_HEIGHT / 2;
 
 			float vy = (float) Math.pow(2 * GRAVITY * SCREEN_HEIGHT, 0.5f);
-			BOUND_VELOCITY = -(float) (vy / Math.cos(ALPHA)) * 3.5f;
+			BOUND_VELOCITY = -(float) (vy / Math.cos(ALPHA)) * 3.6f;
 			MOVE_TIME = 0.07f;
 			COURT_UPPER_BOUND = 12.6f / 16.0f * SCREEN_HEIGHT;
 			COURT_MIDDLE_BOUND = COURT_UPPER_BOUND
@@ -140,7 +141,8 @@ public class Game {
 			LEAF_WIDTH = BALL_RADIUS / 2f;
 			LEAF_HEIGHT = BALL_RADIUS / 2f;
 
-			WIND_SPEED = 2f;
+			WIND_SPEED = 1.5f;
+			GAME_PAUSE = false;
 		}
 
 		public static float WIND_SPEED;
@@ -158,7 +160,7 @@ public class Game {
 		/**
 		 * 投篮的仰角
 		 */
-		public static float ALPHA = (float) (Math.PI / 18f);
+		public static float ALPHA = (float) (Math.PI / 20f);
 		/**
 		 * 投篮速度的阀值（最大）
 		 */
@@ -177,5 +179,10 @@ public class Game {
 		public static float FARTHEST, NEAREST;
 
 		public static float LEAF_WIDTH, LEAF_HEIGHT;
+		/** 背景音乐，开 */
+		public static boolean GAME_MUSIC_ON;
+		/** 音效，开 */
+		public static boolean SOUND_EFFECT_ON;
+		public static boolean GAME_PAUSE;
 	}
 }

@@ -39,7 +39,7 @@ public class Leaf extends ScreenItem {
 	@Override
 	protected void logic() {
 		// Log.d("LeafSpeed", Float.toString(speedX));
-		this.x += this.speedX * 3f;
+		this.x += this.speedX * 5f;
 		this.y += this.speedY;
 		if (x > Game.Constant.SCREEN_WIDTH) {
 			x = 0;

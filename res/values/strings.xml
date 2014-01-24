@@ -2,5 +2,6 @@
 <resources>
 
     <string name="app_name">Shooting</string>
+    <color name="transparent">#9000</color>
 
 </resources>

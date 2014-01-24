@@ -40,7 +40,7 @@ public class MyGestureListener extends GestureDetector.SimpleOnGestureListener {
 					//根据滑动的距离给篮球设置初始速度
 					ball.setSpeedX((e2.getX()-e1.getX())*0.3f);
 					//Y,Z轴方向的合速度
-					float speedYZ = ((e2.getY()-e1.getY())) * 2f;
+					float speedYZ = ((e2.getY()-e1.getY())) * 3f;
 					/**
 					 * 投篮速度不能超过阀值
 					 */
@@ -48,7 +48,7 @@ public class MyGestureListener extends GestureDetector.SimpleOnGestureListener {
 						speedYZ = Game.Constant.BOUND_VELOCITY;
 					}
 					ball.setSpeedY((float) (speedYZ*Math.cos(Game.Constant.ALPHA)));
-					ball.setSpeedZ(-(float) (speedYZ*Math.sin(Game.Constant.ALPHA)));
+					ball.setSpeedZ(-(float) (speedYZ*Math.sin(Game.Constant.ALPHA))*1.15f);
 					
 					ball.unShoot = false;
 				}

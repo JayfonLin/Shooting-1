@@ -18,7 +18,13 @@ import android.graphics.Paint;
 public class Hoop extends ScreenItem {
 
 	private int currentFrame;
-
+	/**
+	 * 移动方向：0 不动
+	 *          1 向左
+	 *          2 向右
+	 */
+	public int move_direction;
+	public float speedX;
 	private static Hoop instance;
 	public float scaleFactor;
 	/**
@@ -49,7 +55,8 @@ public class Hoop extends ScreenItem {
 		this.x = Game.Constant.HOOP_X;
 		this.y = Game.Constant.HOOP_Y;
 		this.z = Game.Constant.FARTHEST - Game.Constant.HOOP_RADIUS;
-		
+		move_direction = 0;
+		speedX = 1f;
 		scaleFactor = 1f;
 		bmps = new Bitmap[5];
 		for (int i = 0; i < 5; ++i)
@@ -145,6 +152,27 @@ public class Hoop extends ScreenItem {
 				missCount = 0;
 				isSmaller = true;
 				smallerTimer = 0;
+			}
+		}
+		
+		//如果是第3关及以上的关卡，篮筐左右移动
+		if (Game.getLevel() >= 3){
+			if (move_direction == 0){
+				move_direction = 1;
+			}else if (move_direction == 1){
+				if (x <= Game.Constant.SCREEN_WIDTH/4+Game.Constant.BACKBOARD_WIDHT/4){
+					move_direction = 2;
+				}
+			}else if (move_direction == 2){
+				if (x >= Game.Constant.SCREEN_WIDTH*3/4-Game.Constant.BACKBOARD_WIDHT/4){
+					move_direction = 1;
+				}
+			}
+			
+			if (move_direction == 1){
+				x -= speedX;
+			}else if (move_direction == 2){
+				x += speedX;
 			}
 		}
 		
