@@ -61,6 +61,8 @@ public class Ball extends ScreenItem {
 	 * 获得篮框的一个实例
 	 */
 	public Hoop hoop = Hoop.getInstance();
+	public Hint hint = Hint.getInstance();
+	public Score score = Score.getInstance();
 	/**
 	 * 篮球投出去的最高点Y值
 	 */
@@ -350,6 +352,16 @@ public class Ball extends ScreenItem {
 			hoop.goalCount++;
 			hoop.missCount = 0;
 			all_goal_count++;
+			
+			int finalScore = 0;
+			if(Game.getLevel() >= 3){
+				finalScore = 3;
+			} else {
+				finalScore = 2;
+			}
+			hint.isGoal = true;
+			hint.score = finalScore;
+			score.addScore(finalScore);
 		}
 	}
 

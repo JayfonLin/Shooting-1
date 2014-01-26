@@ -4,21 +4,24 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import com.android13.shooting.res.BitmapPool;
-import com.android13.shooting.screenItems.Backboard;
-import com.android13.shooting.screenItems.Background;
-import com.android13.shooting.screenItems.Ball;
-import com.android13.shooting.screenItems.Hoop;
-import com.android13.shooting.screenItems.ScreenItem;
-import com.android13.shooting.screenItems.Wind;
-
 import android.app.Activity;
-import android.content.SharedPreferences;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.PaintFlagsDrawFilter;
 import android.util.DisplayMetrics;
 import android.view.SurfaceHolder;
+
+import com.android13.shooting.res.BitmapPool;
+import com.android13.shooting.screenItems.Backboard;
+import com.android13.shooting.screenItems.Background;
+import com.android13.shooting.screenItems.Ball;
+import com.android13.shooting.screenItems.Hint;
+import com.android13.shooting.screenItems.Hoop;
+import com.android13.shooting.screenItems.LevelNumber;
+import com.android13.shooting.screenItems.Score;
+import com.android13.shooting.screenItems.ScreenItem;
+import com.android13.shooting.screenItems.Timer;
+import com.android13.shooting.screenItems.Wind;
 
 /**
  * 游戏控制类，负责游戏整体的逻辑调度
@@ -33,11 +36,15 @@ public class Game {
 	private static int level;
 	public static int goal_count = 0;
 
-	// public static ArrayList<Ball> balls;
+	// 所有的球的集合
+	public static ArrayList<Ball> balls = new ArrayList<Ball>();
+
+	// 获取当前的关卡
 	public static int getLevel() {
 		return level;
 	}
 
+	// 游戏初始化
 	public static void init(Activity activity, int lv) {
 
 		level = lv;
@@ -50,18 +57,38 @@ public class Game {
 		BitmapPool.loadAll(activity);
 		// balls = new ArrayList<Ball>();
 		sortedItems = new ArrayList<ScreenItem>();
+
+		// 加载当前关卡显示图案
+		sortedItems.add(new LevelNumber(level));
+
+		// 加载游戏背景
 		sortedItems.add(Background.getInstance());
 		sortedItems.add(Backboard.getInstance());
 		sortedItems.add(Hoop.getInstance());
+
+		// 加载风
 		sortedItems.add(Wind.getInstance());
-		if (level >= 4) {
+		if (level == 4) {
 			Wind.getInstance().windBegin(Constant.WIND_SPEED);
 		}
+		// System.out.println("IsTrain................." +
+		// Game.Constant.IS_TRAIN);
+
+		// 如果不是训练模式，加载计时器并设置计时器的初始值
+		if (!Game.Constant.IS_TRAIN) {
+			sortedItems.add(Timer.getInstance());
+			Timer.getInstance().setRemainingTime(10);
+		}
+		// 加载分数显示
+		sortedItems.add(Score.getInstance());
+
+		// 加载进球提示数字
+		sortedItems.add(Hint.getInstance());
 		// 三个篮球
 		for (int i = 0; i < 3; i++) {
 			Ball ball = new Ball();
 			sortedItems.add(ball);
-			// balls.add(ball);
+			balls.add(ball);
 		}
 
 	}
@@ -97,9 +124,14 @@ public class Game {
 		Collections.sort(sortedItems);
 	}
 
-	public static void release() {
+	public static void release(boolean destoryScore) {
 		for (int i = 0; i < sortedItems.size(); i++) {
 			sortedItems.get(i).release();
+		}
+		sortedItems.clear();
+		balls.clear();
+		if (destoryScore) {
+			Score.getInstance().setScore(0);
 		}
 	}
 
@@ -132,7 +164,7 @@ public class Game {
 			TOP_HOOP_PY = HOOP_Y - HOOP_HEIGHT / 2;
 
 			float vy = (float) Math.pow(2 * GRAVITY * SCREEN_HEIGHT, 0.5f);
-			BOUND_VELOCITY = -(float) (vy / Math.cos(ALPHA)) * 3.6f;
+			BOUND_VELOCITY = -(float) (vy / Math.cos(ALPHA)) * 3.45f;
 			MOVE_TIME = 0.07f;
 			COURT_UPPER_BOUND = 12.6f / 16.0f * SCREEN_HEIGHT;
 			COURT_MIDDLE_BOUND = COURT_UPPER_BOUND
@@ -143,6 +175,19 @@ public class Game {
 
 			WIND_SPEED = 1.5f;
 			GAME_PAUSE = false;
+
+			TIME_NUM_WIDTH = SCREEN_WIDTH / 5f;
+			TIME_NUM_HEIGHT = SCREEN_HEIGHT / 4f;
+
+			SCORE_NUM_WIDTH = SCREEN_WIDTH / 4f;
+			SCORE_NUM_HEIGHT = SCREEN_WIDTH / 2.4f;
+
+			HINT_WIDTH = SCREEN_WIDTH / 7f;
+			HINT_HEIGHT = SCREEN_WIDTH / 10f;
+
+			LEVEL_WIDTH = SCREEN_HEIGHT / 40f;
+			LEVEL_HEIGHT = SCREEN_WIDTH / 10f;
+
 		}
 
 		public static float WIND_SPEED;
@@ -184,5 +229,19 @@ public class Game {
 		/** 音效，开 */
 		public static boolean SOUND_EFFECT_ON;
 		public static boolean GAME_PAUSE;
+
+		// 显示时间数字大小
+		public static float TIME_NUM_WIDTH, TIME_NUM_HEIGHT;
+		// 显示分数大小
+		public static float SCORE_NUM_WIDTH, SCORE_NUM_HEIGHT;
+
+		// 显示进球提示大小
+		public static float HINT_WIDTH, HINT_HEIGHT;
+
+		// 显示关卡大小
+		public static float LEVEL_WIDTH, LEVEL_HEIGHT;
+
+		// 是否为训练模式
+		public static boolean IS_TRAIN;
 	}
 }

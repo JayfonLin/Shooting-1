@@ -2,10 +2,8 @@
 
 import java.io.IOException;
 
-
 import android.app.Activity;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.os.Bundle;
@@ -18,7 +16,6 @@ import android.view.ViewGroup.LayoutParams;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
-import android.widget.Toast;
 
 /**
  * 游戏的入口Activity
@@ -47,7 +44,7 @@ public class MainActivity extends Activity {
 		int level = intent.getIntExtra("level", 1);
 		// 2014年1月21日14:26:46 以第几关初始化游戏
 		Game.init(this, level);
-		mainSurfaceView = new MainSurfaceView(this);
+		mainSurfaceView = new MainSurfaceView(this, this);
 		setContentView(mainSurfaceView);
 
 	}
@@ -103,7 +100,7 @@ public class MainActivity extends Activity {
 				@Override
 				public void onClick(View v) {
 					closePopWin();
-					Game.release();
+					Game.release(true);
 					mediaPlayer.stop();
 					finish();
 				}
