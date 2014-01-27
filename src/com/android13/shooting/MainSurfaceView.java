@@ -29,7 +29,7 @@ public class MainSurfaceView extends SurfaceView implements Callback, Runnable,
 		OnTouchListener {
 
 	private boolean flag;
-
+	private boolean isBegin;
 	private SurfaceHolder surfaceHolder;
 	private Canvas canvas;
 	private Paint paint;
@@ -60,9 +60,16 @@ public class MainSurfaceView extends SurfaceView implements Callback, Runnable,
 		flag = true;
 		thread = new Thread(this);
 		thread.start();
-		Message msg = new Message();
-		msg.what = MainActivity.MESSAGE_NEXTLEVEL;
-		handler.sendMessage(msg);
+		if (!isBegin) {
+			isBegin = true;
+			Message msg = new Message();
+			msg.what = MainActivity.MESSAGE_NEXTLEVEL;
+			handler.sendMessage(msg);
+		} else {
+			Message msg = new Message();
+			msg.what = MainActivity.MESSAGE_RESTART;
+			handler.sendMessage(msg);
+		}
 	}
 
 	@Override

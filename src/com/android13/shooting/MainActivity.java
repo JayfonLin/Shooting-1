@@ -42,6 +42,7 @@ public class MainActivity extends Activity {
 
 	public static final int MESSAGE_NEXTLEVEL = 1;
 	public static final int MESSAGE_FINISH = 2;
+	public static final int MESSAGE_RESTART = 3;
 
 	private MediaPlayer mediaPlayer;
 	SurfaceView mainSurfaceView;
@@ -51,9 +52,11 @@ public class MainActivity extends Activity {
 	Handler handler = new Handler() {
 		@Override
 		public void handleMessage(Message msg) {
+			System.out.println("Recieve Message " + msg);
 			switch (msg.what) {
 			case MESSAGE_NEXTLEVEL:
-				handler.postDelayed(new ReadyGo(), 100);
+			case MESSAGE_RESTART:
+				handler.postDelayed(new ReadyGo(msg.what), 100);
 				break;
 			case MESSAGE_FINISH:
 				handler.post(new ShowScore());
@@ -79,10 +82,10 @@ public class MainActivity extends Activity {
 		Intent intent = getIntent();
 		int level = intent.getIntExtra("level", 1);
 		// 2014年1月21日14:26:46 以第几关初始化游戏
-		
+
 		Game.Constant.GAME_REMAIN_TIME = 60;
 		Game.init(this, level);
-		
+
 		mainSurfaceView = new MainSurfaceView(this, handler);
 		setContentView(mainSurfaceView);
 	}
@@ -129,6 +132,9 @@ public class MainActivity extends Activity {
 				@Override
 				public void onClick(View v) {
 					closePopWin();
+					Message msg = new Message();
+					msg.what = MainActivity.MESSAGE_RESTART;
+					handler.sendMessage(msg);
 					onResume();
 				}
 			});
@@ -275,6 +281,11 @@ public class MainActivity extends Activity {
 		private PopupWindow popupWin;
 		private int index;
 		private ImageView cd;
+		private int msg;
+
+		public ReadyGo(int msg) {
+			this.msg = msg;
+		}
 
 		@Override
 		public void run() {
@@ -331,8 +342,10 @@ public class MainActivity extends Activity {
 						break;
 					case 4:
 						popupWin.dismiss();
-						Timer.getInstance().setRemainingTime(
-								Game.Constant.GAME_REMAIN_TIME);
+						if (msg == MESSAGE_NEXTLEVEL) {
+							Timer.getInstance().setRemainingTime(
+									Game.Constant.GAME_REMAIN_TIME);
+						}
 						onResume();
 						break;
 					}
