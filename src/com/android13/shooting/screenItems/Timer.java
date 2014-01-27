@@ -13,7 +13,6 @@ public class Timer extends ScreenItem {
 
 	private static Timer instance;
 
-	private boolean flag;
 	private int remainingTime;
 	private Bitmap timeBmp;
 	private long postTime;
@@ -89,7 +88,7 @@ public class Timer extends ScreenItem {
 		canvas.drawBitmap(
 				Bitmap.createBitmap(timeBmp, 0, 0, timeBmp.getWidth(),
 						timeBmp.getHeight(), matrix, true),
-				x - bmps[0].getWidth() - timeBmp.getWidth() / 2, y, paint);
+				x - bmps[0].getWidth() / 2 - timeBmp.getWidth() / 2, y, paint);
 	}
 
 	// 判断计时器是否结束

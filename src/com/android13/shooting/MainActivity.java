@@ -1,19 +1,16 @@
 ﻿package com.android13.shooting;
 
 import java.io.IOException;
-import java.security.PublicKey;
-
-import com.android13.shooting.screenItems.Score;
-import com.android13.shooting.screenItems.Timer;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.SurfaceView;
@@ -22,10 +19,18 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup.LayoutParams;
 import android.view.animation.Animation;
 import android.view.animation.Animation.AnimationListener;
-import android.view.animation.RotateAnimation;
+import android.view.animation.ScaleAnimation;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
+import android.widget.TextView;
+
+import com.android13.shooting.screenItems.Score;
+import com.android13.shooting.screenItems.Timer;
+import com.android13.shooting.sql.Data;
+import com.android13.shooting.sql.SqlOpenHelper;
 
 /**
  * 游戏的入口Activity
@@ -35,7 +40,6 @@ import android.widget.PopupWindow;
  */
 public class MainActivity extends Activity {
 
-	public static final int MESSAGE_READYGO = 0;
 	public static final int MESSAGE_NEXTLEVEL = 1;
 	public static final int MESSAGE_FINISH = 2;
 
@@ -44,34 +48,27 @@ public class MainActivity extends Activity {
 	PopupWindow mPopWin;
 	ImageView resumeIV, replayIV;
 	Bundle initial_state;
-	Handler handler;
+	Handler handler = new Handler() {
+		@Override
+		public void handleMessage(Message msg) {
+			switch (msg.what) {
+			case MESSAGE_NEXTLEVEL:
+				handler.postDelayed(new ReadyGo(), 100);
+				break;
+			case MESSAGE_FINISH:
+				handler.post(new ShowScore());
+				break;
+			default:
+				break;
+			}
+			super.handleMessage(msg);
+		}
+	};
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		initial_state = savedInstanceState;
-		handler = new Handler() {
-			@Override
-			public void handleMessage(Message msg) {
-				switch (msg.what) {
-				case MESSAGE_NEXTLEVEL:
-					handler.postDelayed(new ReadyGo(), 100);
-					break;
-				case MESSAGE_FINISH:
-					Intent intent = new Intent(MainActivity.this,
-							StoreScoreActivity.class);
-					Bundle bundle = new Bundle();
-					bundle.putString("score",
-							Integer.toString(Score.getInstance().getScore()));
-					intent.putExtras(bundle);
-					startActivity(intent);
-					finish();
-				default:
-					break;
-				}
-				super.handleMessage(msg);
-			}
-		};
 
 		PlaySound.init(this, 5, AudioManager.STREAM_MUSIC, 0);
 		mediaPlayer = MediaPlayer.create(getApplicationContext(),
@@ -82,9 +79,10 @@ public class MainActivity extends Activity {
 		Intent intent = getIntent();
 		int level = intent.getIntExtra("level", 1);
 		// 2014年1月21日14:26:46 以第几关初始化游戏
-
+		
+		Game.Constant.GAME_REMAIN_TIME = 60;
 		Game.init(this, level);
-		Game.Constant.GAME_REMAIN_TIME = 10;
+		
 		mainSurfaceView = new MainSurfaceView(this, handler);
 		setContentView(mainSurfaceView);
 	}
@@ -188,6 +186,90 @@ public class MainActivity extends Activity {
 		}
 	}
 
+	class ShowScore implements Runnable {
+		PopupWindow scorePopupWin;
+		TextView scoreTextView;
+		Button menuButton;
+		Button saveButton;
+		ImageView week_new, history_new;
+		EditText nameEditText = new EditText(MainActivity.this);
+		SqlOpenHelper sqlOpenHelper = new SqlOpenHelper(MainActivity.this);
+		int score;
+		DialogInterface.OnClickListener okClickListener = new DialogInterface.OnClickListener() {
+
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+				String name = nameEditText.getText().toString();
+				if (name.equals("")) {
+					name = "noname";
+				}
+				Data data = new Data(-1, name, score,
+						System.currentTimeMillis());
+				sqlOpenHelper.insert(data);
+				saveButton.setVisibility(View.INVISIBLE);
+				dialog.dismiss();
+			}
+		};
+		DialogInterface.OnClickListener cancelClickListener = new DialogInterface.OnClickListener() {
+
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+				dialog.dismiss();
+			}
+		};
+		AlertDialog saveDialog = new AlertDialog.Builder(MainActivity.this)
+				.setTitle("请输入名字：").setView(nameEditText)
+				.setPositiveButton("确定", okClickListener)
+				.setNegativeButton("取消", cancelClickListener).create();
+
+		@Override
+		public void run() {
+			score = Score.getInstance().getScore();
+
+			LinearLayout popWin_layout = (LinearLayout) getLayoutInflater()
+					.inflate(R.layout.sort_score, null);
+			scorePopupWin = new PopupWindow(popWin_layout,
+					LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
+
+			scorePopupWin.setOutsideTouchable(true);
+			scorePopupWin.setFocusable(true);
+			scorePopupWin.showAtLocation(mainSurfaceView, Gravity.CENTER, 0, 0);
+			scorePopupWin.update();
+
+			scoreTextView = (TextView) popWin_layout
+					.findViewById(R.id.tv_score);
+			menuButton = (Button) popWin_layout.findViewById(R.id.menu_btn);
+			saveButton = (Button) popWin_layout.findViewById(R.id.save_btn);
+			week_new = (ImageView) popWin_layout.findViewById(R.id.week_record);
+			history_new = (ImageView) popWin_layout
+					.findViewById(R.id.history_record);
+
+			scoreTextView.setText(Integer.toString(score));
+			saveButton.setOnClickListener(new OnClickListener() {
+
+				@Override
+				public void onClick(View v) {
+					saveDialog.show();
+				}
+			});
+			menuButton.setOnClickListener(new OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					scorePopupWin.dismiss();
+					finish();
+				}
+			});
+			int historyHighScore = sqlOpenHelper.getHistoryHighestScore();
+			int weekHighScore = sqlOpenHelper.getWeekHightestScore();
+			if (score > historyHighScore) {
+				history_new.setVisibility(View.VISIBLE);
+			}
+			if (score > weekHighScore) {
+				week_new.setVisibility(View.VISIBLE);
+			}
+		}
+	}
+
 	class ReadyGo implements Runnable {
 
 		private PopupWindow popupWin;
@@ -223,29 +305,29 @@ public class MainActivity extends Activity {
 
 				@Override
 				public void onAnimationEnd(Animation animation) {
-					RotateAnimation rotateAnimation = new RotateAnimation(0,
-							360, Animation.RELATIVE_TO_SELF, 0.5f,
+					ScaleAnimation scaleAnimation = new ScaleAnimation(1.0f,
+							2.0f, 1.0f, 2.0f, Animation.RELATIVE_TO_SELF, 0.5f,
 							Animation.RELATIVE_TO_SELF, 0.5f);
-					rotateAnimation.setDuration(1000);
-					rotateAnimation.setAnimationListener(this);
+					scaleAnimation.setDuration(1000);
+					scaleAnimation.setAnimationListener(this);
 					switch (index) {
 					case 1:
 						index++;
 						cd.setImageDrawable(getResources().getDrawable(
 								R.drawable.cd_2));
-						cd.startAnimation(rotateAnimation);
+						cd.startAnimation(scaleAnimation);
 						break;
 					case 2:
 						index++;
 						cd.setImageDrawable(getResources().getDrawable(
 								R.drawable.cd_1));
-						cd.startAnimation(rotateAnimation);
+						cd.startAnimation(scaleAnimation);
 						break;
 					case 3:
 						index++;
 						cd.setImageDrawable(getResources().getDrawable(
 								R.drawable.cd_go));
-						cd.startAnimation(rotateAnimation);
+						cd.startAnimation(scaleAnimation);
 						break;
 					case 4:
 						popupWin.dismiss();
@@ -258,12 +340,12 @@ public class MainActivity extends Activity {
 			};
 
 			cd = (ImageView) popWin_layout.findViewById(R.id.imageView1);
-			RotateAnimation rotateAnimation = new RotateAnimation(0, 360,
-					Animation.RELATIVE_TO_SELF, 0.5f,
+			ScaleAnimation scaleAnimation = new ScaleAnimation(1.0f, 2.0f,
+					1.0f, 2.0f, Animation.RELATIVE_TO_SELF, 0.5f,
 					Animation.RELATIVE_TO_SELF, 0.5f);
-			rotateAnimation.setDuration(1000);
-			rotateAnimation.setAnimationListener(animationListener);
-			cd.startAnimation(rotateAnimation);
+			scaleAnimation.setDuration(1000);
+			scaleAnimation.setAnimationListener(animationListener);
+			cd.startAnimation(scaleAnimation);
 		}
 
 	}

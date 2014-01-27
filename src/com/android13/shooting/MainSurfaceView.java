@@ -3,11 +3,9 @@
 import java.util.List;
 
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.view.GestureDetector;
@@ -19,7 +17,6 @@ import android.view.View;
 import android.view.View.OnTouchListener;
 
 import com.android13.shooting.screenItems.Ball;
-import com.android13.shooting.screenItems.Score;
 import com.android13.shooting.screenItems.Timer;
 
 /**

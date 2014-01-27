@@ -29,10 +29,6 @@
             android:name="com.android13.shooting.LevelSelector"
             android:label="@string/app_name" >
         </activity>
-        <activity android:name="com.android13.shooting.StoreScoreActivity" >
-        </activity>
-        <activity android:name="com.android13.shooting.ShowScoreActivity" >
-        </activity>
     </application>
 
 </manifest>

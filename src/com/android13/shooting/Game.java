@@ -77,7 +77,8 @@ public class Game {
 		// 如果不是训练模式，加载计时器并设置计时器的初始值
 		if (!Game.Constant.IS_TRAIN) {
 			sortedItems.add(Timer.getInstance());
-			Timer.getInstance().setRemainingTime(10);
+			Timer.getInstance()
+					.setRemainingTime(Game.Constant.GAME_REMAIN_TIME);
 		}
 		// 加载分数显示
 		sortedItems.add(Score.getInstance());
@@ -110,7 +111,8 @@ public class Game {
 
 		if (!Game.Constant.IS_TRAIN) {
 			sortedItems.add(Timer.getInstance());
-			Timer.getInstance().setRemainingTime(10);
+			Timer.getInstance()
+					.setRemainingTime(Game.Constant.GAME_REMAIN_TIME);
 		}
 		sortedItems.add(Score.getInstance());
 		sortedItems.add(Hint.getInstance());
@@ -205,8 +207,8 @@ public class Game {
 			WIND_SPEED = 1.5f;
 			GAME_PAUSE = false;
 
-			TIME_NUM_WIDTH = SCREEN_WIDTH / 5f;
-			TIME_NUM_HEIGHT = SCREEN_HEIGHT / 4f;
+			TIME_NUM_WIDTH = SCREEN_WIDTH / 10f;
+			TIME_NUM_HEIGHT = SCREEN_HEIGHT / 8f;
 
 			SCORE_NUM_WIDTH = SCREEN_WIDTH / 4f;
 			SCORE_NUM_HEIGHT = SCREEN_WIDTH / 2.4f;

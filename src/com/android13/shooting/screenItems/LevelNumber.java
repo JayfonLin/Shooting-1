@@ -22,8 +22,8 @@ public class LevelNumber extends ScreenItem {
 		bmpWidth = bmp.getWidth();
 		bmpHeight = bmp.getHeight();
 
-		this.x = Game.Constant.SCREEN_WIDTH / 2;
-		this.y = Game.Constant.SCREEN_WIDTH / 50f ;
+		this.x = Game.Constant.SCREEN_WIDTH / 2 + bmpWidth;
+		this.y = Game.Constant.SCREEN_WIDTH / 20f + bmpHeight / 2;
 		this.z = Game.Constant.NEAREST;
 	}
 

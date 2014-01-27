@@ -1,11 +1,16 @@
 package com.android13.shooting;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.Gravity;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -13,7 +18,12 @@ import android.view.ViewGroup.LayoutParams;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.PopupWindow;
+import android.widget.SimpleAdapter;
+
+import com.android13.shooting.sql.Data;
+import com.android13.shooting.sql.SqlOpenHelper;
 
 // TODO 添加排行榜的Activity，按钮ID 为high_score_btn
 
@@ -26,6 +36,7 @@ public class LevelSelector extends Activity {
 	Button exitButton, highScoreButton;
 	ImageView game_music_IV, sound_effect_IV, sureIV, cancelIV;
 	Boolean game_music_temp, game_sound_temp;
+	Handler handler = new Handler();
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -50,7 +61,7 @@ public class LevelSelector extends Activity {
 
 			@Override
 			public void onClick(View v) {
-				
+				handler.post(new ShowHighScore());
 			}
 		});
 
@@ -240,5 +251,88 @@ public class LevelSelector extends Activity {
 		else
 			sound_effect_IV.setImageDrawable(getResources().getDrawable(
 					R.drawable.volume_off));
+	}
+
+	class ShowHighScore implements Runnable {
+		PopupWindow highScorePopupWin;
+		ListView scoreListView;
+		List<HashMap<String, String>> showHighScoreData;
+		SimpleAdapter scoreAdapter;
+		Button weekButton;
+		Button historyButton;
+		Button backButton;
+		SqlOpenHelper sqlOpenHelper;
+
+		@Override
+		public void run() {
+			sqlOpenHelper = new SqlOpenHelper(LevelSelector.this);
+			LinearLayout popWin_layout = (LinearLayout) getLayoutInflater()
+					.inflate(R.layout.show_score, null);
+			highScorePopupWin = new PopupWindow(popWin_layout,
+					LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
+			showHighScoreData = new ArrayList<HashMap<String, String>>();
+			getData(1);
+
+			highScorePopupWin.setOutsideTouchable(true);
+			highScorePopupWin.setFocusable(true);
+			highScorePopupWin.showAtLocation(ll, Gravity.CENTER, 0, 0);
+			highScorePopupWin.update();
+
+			weekButton = (Button) popWin_layout.findViewById(R.id.week_btn);
+			historyButton = (Button) popWin_layout
+					.findViewById(R.id.history_btn);
+			backButton = (Button) popWin_layout.findViewById(R.id.back);
+			scoreListView = (ListView) popWin_layout
+					.findViewById(R.id.score_list);
+
+			historyButton.setOnClickListener(new OnClickListener() {
+
+				@Override
+				public void onClick(View v) {
+					getData(1);
+					scoreAdapter.notifyDataSetChanged();
+				}
+			});
+			weekButton.setOnClickListener(new OnClickListener() {
+
+				@Override
+				public void onClick(View v) {
+					getData(0);
+					scoreAdapter.notifyDataSetChanged();
+				}
+			});
+			backButton.setOnClickListener(new OnClickListener() {
+
+				@Override
+				public void onClick(View v) {
+					highScorePopupWin.dismiss();
+				}
+			});
+
+			scoreAdapter = new SimpleAdapter(LevelSelector.this,
+					showHighScoreData, R.layout.score_item, new String[] {
+							"rank", "name", "score" }, new int[] { R.id.rank,
+							R.id.name, R.id.score });
+			scoreListView.setAdapter(scoreAdapter);
+		}
+
+		private void getData(int field) {
+			showHighScoreData.clear();
+
+			List<Data> datas = new ArrayList<Data>();
+			if (field == 0) {
+				datas = sqlOpenHelper.getWeekData();
+			} else {
+				datas = sqlOpenHelper.getAllData();
+			}
+
+			for (int i = 0; i < datas.size(); i++) {
+				HashMap<String, String> map = new HashMap<String, String>();
+				map.put("rank", Integer.toString(i + 1));
+				map.put("name", datas.get(i).getName());
+				map.put("score", Integer.toString(datas.get(i).getScore()));
+				showHighScoreData.add(map);
+			}
+		}
 	}
 }

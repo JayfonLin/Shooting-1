@@ -71,7 +71,7 @@ public class BitmapPool {
 		// 时间字样"time："
 		Bitmap time = BitmapFactory.decodeResource(res, R.drawable.time);
 		pool.put(R.drawable.time, Bitmap.createScaledBitmap(time,
-				(int) Game.Constant.TIME_NUM_WIDTH * 4,
+				(int) (Game.Constant.TIME_NUM_WIDTH * 3.5f),
 				(int) Game.Constant.TIME_NUM_HEIGHT, true));
 		time.recycle();
 		time = null;

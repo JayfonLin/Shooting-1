@@ -1,29 +1,33 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent" >
 
     <TextView
-        android:id="@+id/textView1"
+        android:id="@+id/rank"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:gravity="center"
-        android:layout_weight="0.3"
-        android:text="TextView" />
+        android:text="排名"
+        android:textColor="#101010"
+        android:textSize="20sp" />
 
     <TextView
-        android:id="@+id/textView2"
+        android:id="@+id/name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:gravity="center"
-        android:layout_weight="0.3"
-        android:text="TextView" />
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:text="名字"
+        android:textColor="#101010"
+        android:textSize="20sp" />
 
     <TextView
-        android:id="@+id/textView3"
+        android:id="@+id/score"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:gravity="center"
-        android:layout_weight="0.3"
-        android:text="TextView" />
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"
+        android:text="分数"
+        android:textColor="#101010"
+        android:textSize="20sp" />
 
-</LinearLayout>
+</RelativeLayout>
