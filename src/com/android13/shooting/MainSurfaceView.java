@@ -17,6 +17,7 @@ import android.view.View;
 import android.view.View.OnTouchListener;
 
 import com.android13.shooting.screenItems.Ball;
+import com.android13.shooting.screenItems.Score;
 import com.android13.shooting.screenItems.Timer;
 
 /**
@@ -116,7 +117,9 @@ public class MainSurfaceView extends SurfaceView implements Callback, Runnable,
 	}
 
 	private void startNextLevel() {
-		if (Game.getLevel() < 4) {
+		if ((Game.getLevel() == 1 && Score.getInstance().getScore() >= 40)
+				|| (Game.getLevel() == 2 && Score.getInstance().getScore() >= 90)
+				|| ((Game.getLevel() == 3 && Score.getInstance().getScore() >= 150))) {
 			Game.nextLevel();
 			Message msg = new Message();
 			msg.what = MainActivity.MESSAGE_NEXTLEVEL;

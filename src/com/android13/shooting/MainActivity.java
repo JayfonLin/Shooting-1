@@ -252,7 +252,6 @@ public class MainActivity extends Activity {
 
 			scoreTextView.setText(Integer.toString(score));
 			saveButton.setOnClickListener(new OnClickListener() {
-
 				@Override
 				public void onClick(View v) {
 					saveDialog.show();
