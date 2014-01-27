@@ -45,15 +45,15 @@ public class LevelSelector extends Activity {
 		settingsIV = (Button) this.findViewById(R.id.setting_btn);
 		exitButton = (Button) this.findViewById(R.id.exit_btn);
 		highScoreButton = (Button) this.findViewById(R.id.high_score_btn);
-		
+
 		highScoreButton.setOnClickListener(new OnClickListener() {
-			
+
 			@Override
 			public void onClick(View v) {
-				//  跳转。。。
+				
 			}
 		});
-		
+
 		singleButton.setOnClickListener(new OnClickListener() {
 
 			@Override

@@ -90,7 +90,36 @@ public class Game {
 			sortedItems.add(ball);
 			balls.add(ball);
 		}
+	}
 
+	public static void nextLevel() {
+
+		level++;
+		sortedItems.clear();
+		balls.clear();
+		sortedItems.add(new LevelNumber(level));
+
+		sortedItems.add(Background.getInstance());
+		sortedItems.add(Backboard.getInstance());
+		sortedItems.add(Hoop.getInstance());
+
+		sortedItems.add(Wind.getInstance());
+		if (level == 4) {
+			Wind.getInstance().windBegin(Constant.WIND_SPEED);
+		}
+
+		if (!Game.Constant.IS_TRAIN) {
+			sortedItems.add(Timer.getInstance());
+			Timer.getInstance().setRemainingTime(10);
+		}
+		sortedItems.add(Score.getInstance());
+		sortedItems.add(Hint.getInstance());
+		// 三个篮球
+		for (int i = 0; i < 3; i++) {
+			Ball ball = new Ball();
+			sortedItems.add(ball);
+			balls.add(ball);
+		}
 	}
 
 	public static List<ScreenItem> getSortedItems() {
@@ -187,7 +216,6 @@ public class Game {
 
 			LEVEL_WIDTH = SCREEN_HEIGHT / 40f;
 			LEVEL_HEIGHT = SCREEN_WIDTH / 10f;
-
 		}
 
 		public static float WIND_SPEED;
@@ -243,5 +271,7 @@ public class Game {
 
 		// 是否为训练模式
 		public static boolean IS_TRAIN;
+
+		public static int GAME_REMAIN_TIME;
 	}
 }

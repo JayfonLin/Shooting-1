@@ -2,26 +2,21 @@
 
 import java.util.List;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.os.Bundle;
-import android.os.Looper;
+import android.os.Handler;
+import android.os.Message;
 import android.view.GestureDetector;
-import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceHolder.Callback;
 import android.view.SurfaceView;
 import android.view.View;
 import android.view.View.OnTouchListener;
-import android.view.ViewGroup.LayoutParams;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.PopupWindow;
 
 import com.android13.shooting.screenItems.Ball;
 import com.android13.shooting.screenItems.Score;
@@ -44,15 +39,12 @@ public class MainSurfaceView extends SurfaceView implements Callback, Runnable,
 	private MyGestureListener myGestureListener;
 	private GestureDetector gestureDetector;
 	private Thread thread;
-	private Activity activity;
-	private Context context;
 	private List<Ball> balls = Game.balls;
+	private Handler handler;
 
-	public MainSurfaceView(Context context, Activity activity) {
+	public MainSurfaceView(Context context, Handler handler) {
 		super(context);
-		this.context = context;
-		this.activity = activity;
-
+		this.handler = handler;
 		surfaceHolder = getHolder();
 		surfaceHolder.addCallback(this);
 		paint = new Paint();
@@ -71,6 +63,9 @@ public class MainSurfaceView extends SurfaceView implements Callback, Runnable,
 		flag = true;
 		thread = new Thread(this);
 		thread.start();
+		Message msg = new Message();
+		msg.what = MainActivity.MESSAGE_NEXTLEVEL;
+		handler.sendMessage(msg);
 	}
 
 	@Override
@@ -118,69 +113,22 @@ public class MainSurfaceView extends SurfaceView implements Callback, Runnable,
 
 	private void startNextLevel() {
 		if (Game.getLevel() < 4) {
-			Game.release(false);
-			Game.init(activity, Game.getLevel() + 1);
-			// readyAndGo();
-
+			Game.nextLevel();
+			Message msg = new Message();
+			msg.what = MainActivity.MESSAGE_NEXTLEVEL;
+			handler.sendMessage(msg);
 		} else {
-			// 跳转。。。。。
-			Intent intent = new Intent(context, StoreScoreActivity.class);
-			Bundle bundle = new Bundle();
-			bundle.putString("score",
-					Integer.toString(Score.getInstance().getScore()));
-			intent.putExtras(bundle);
-			context.startActivity(intent);
-			activity.finish();
+			Game.Constant.GAME_PAUSE = true;
+			Message msg = new Message();
+			msg.what = MainActivity.MESSAGE_FINISH;
+			handler.sendMessage(msg);
 		}
-	}
-
-	private void readyAndGo() {
-		LinearLayout popWin_layout = (LinearLayout) activity
-				.getLayoutInflater().inflate(R.layout.between_level, null);
-		PopupWindow popupWin = new PopupWindow(popWin_layout,
-				LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
-
-		popupWin.setOutsideTouchable(true);
-
-		popupWin.setFocusable(true);
-		Looper.prepare();
-		popupWin.showAtLocation(this, Gravity.CENTER, 0, 0);
-		popupWin.update();
-
-		ImageView cd = (ImageView) popWin_layout.findViewById(R.id.imageView1);
-
-		try {
-			Thread.sleep(500);
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
-		cd.setImageDrawable(activity.getResources()
-				.getDrawable(R.drawable.cd_2));
-		try {
-			Thread.sleep(500);
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
-		cd.setImageDrawable(activity.getResources()
-				.getDrawable(R.drawable.cd_1));
-		try {
-			Thread.sleep(500);
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
-		cd.setImageDrawable(activity.getResources().getDrawable(
-				R.drawable.cd_go));
-		try {
-			Thread.sleep(500);
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
-		Looper.loop();
 	}
 
 	@Override
 	public boolean onTouch(View v, MotionEvent event) {
-		if (!Timer.getInstance().isOverTime()) {
+		if (((!Game.Constant.IS_TRAIN && !Timer.getInstance().isOverTime()) || Game.Constant.IS_TRAIN)
+				&& !Game.Constant.GAME_PAUSE) {
 			gestureDetector.onTouchEvent(event);
 		}
 		return true;
