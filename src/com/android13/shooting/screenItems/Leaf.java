@@ -10,6 +10,14 @@ import com.android13.shooting.Game;
 import com.android13.shooting.R;
 import com.android13.shooting.res.BitmapPool;
 
+/**
+ * 叶子
+ * 
+ * @author 11331197 林家访 <98905067@qq.com>
+ * @author 11331173 李明宽 <sysu_limingkuan@163.com>
+ * @author 11331185 连凌淦 <839021322@qq.com>
+ * 
+ */
 public class Leaf extends ScreenItem {
 
 	public Bitmap leafBitmap;
@@ -38,7 +46,6 @@ public class Leaf extends ScreenItem {
 
 	@Override
 	protected void logic() {
-		// Log.d("LeafSpeed", Float.toString(speedX));
 		this.x += this.speedX * 5f;
 		this.y += this.speedY;
 		if (x > Game.Constant.SCREEN_WIDTH) {

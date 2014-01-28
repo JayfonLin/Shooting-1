@@ -83,8 +83,7 @@ public class Game {
 		/** 如果不是训练模式，加载计时器并设置计时器的初始值 */
 		if (!Game.Constant.IS_TRAIN) {
 			sortedItems.add(Timer.getInstance());
-			Timer.getInstance().setRemainingTime(
-					Game.Constant.GAME_REMAIN_TIME + 1);
+			Timer.getInstance().setRemainingTime(Game.Constant.GAME_REMAIN_TIME + 1);
 		}
 		/** 加载分数显示 */
 		sortedItems.add(Score.getInstance());
@@ -100,32 +99,31 @@ public class Game {
 	}
 
 	/**
-	 * 挑战模式中
+	 * 挑战模式中，当前关卡通过，加载下一关卡
 	 */
 	public static void nextLevel() {
 
-		level++;
+		if (level < 4) {
+			level++;
+		}
 		sortedItems.clear();
 		balls.clear();
-		sortedItems.add(new LevelNumber(level));
 
+		/** 重新加载ScreenItem */
+		sortedItems.add(new LevelNumber(level));
 		sortedItems.add(Background.getInstance());
 		sortedItems.add(Backboard.getInstance());
 		sortedItems.add(Hoop.getInstance());
-
 		sortedItems.add(Wind.getInstance());
 		if (level == 4) {
 			Wind.getInstance().windBegin(Constant.WIND_SPEED);
 		}
-
 		if (!Game.Constant.IS_TRAIN) {
 			sortedItems.add(Timer.getInstance());
-			Timer.getInstance()
-					.setRemainingTime(Game.Constant.GAME_REMAIN_TIME);
+			Timer.getInstance().setRemainingTime(Game.Constant.GAME_REMAIN_TIME);
 		}
 		sortedItems.add(Score.getInstance());
 		sortedItems.add(Hint.getInstance());
-		// 三个篮球
 		for (int i = 0; i < 3; i++) {
 			Ball ball = new Ball();
 			sortedItems.add(ball);
@@ -133,19 +131,30 @@ public class Game {
 		}
 	}
 
+	/**
+	 * 获取当前屏幕中所有的元素
+	 * 
+	 * @return 一个包含了所有当前屏幕元素的List
+	 */
 	public static List<ScreenItem> getSortedItems() {
 		return sortedItems;
 	}
 
-	public static void refreshScreen(SurfaceHolder surfaceHolder,
-			Canvas canvas, Paint paint) {
+	/**
+	 * 调用每一个ScreenItem的draw函数，刷新屏幕
+	 * 
+	 * @param surfaceHolder
+	 * @param canvas
+	 * @param paint
+	 */
+	public static void refreshScreen(SurfaceHolder surfaceHolder, Canvas canvas, Paint paint) {
 
 		gameLogic();
 
 		try {
 			canvas = surfaceHolder.lockCanvas();
-			canvas.setDrawFilter(new PaintFlagsDrawFilter(0,
-					Paint.ANTI_ALIAS_FLAG | Paint.FILTER_BITMAP_FLAG));
+			canvas.setDrawFilter(new PaintFlagsDrawFilter(0, Paint.ANTI_ALIAS_FLAG
+					| Paint.FILTER_BITMAP_FLAG));
 
 			if (canvas != null) {
 				for (ScreenItem item : sortedItems)
@@ -164,6 +173,12 @@ public class Game {
 		Collections.sort(sortedItems);
 	}
 
+	/**
+	 * 游戏结束，释放当前游戏资源
+	 * 
+	 * @param destoryScore
+	 *            是否释放分数，前期版本遗留，这里最好使用true
+	 */
 	public static void release(boolean destoryScore) {
 		for (int i = 0; i < sortedItems.size(); i++) {
 			sortedItems.get(i).release();
@@ -180,6 +195,14 @@ public class Game {
 	 */
 	public static class Constant {
 
+		/**
+		 * 初始化所有的游戏全局常量
+		 * 
+		 * @param sw
+		 *            屏幕宽度
+		 * @param sh
+		 *            屏幕高度
+		 */
 		private static void init(int sw, int sh) {
 			SCREEN_WIDTH = sw;
 			SCREEN_HEIGHT = sh;
@@ -207,8 +230,7 @@ public class Game {
 			BOUND_VELOCITY = -(float) (vy / Math.cos(ALPHA)) * 3.45f;
 			MOVE_TIME = 0.07f;
 			COURT_UPPER_BOUND = 12.6f / 16.0f * SCREEN_HEIGHT;
-			COURT_MIDDLE_BOUND = COURT_UPPER_BOUND
-					+ (SCREEN_HEIGHT - COURT_UPPER_BOUND) / 2f;
+			COURT_MIDDLE_BOUND = COURT_UPPER_BOUND + (SCREEN_HEIGHT - COURT_UPPER_BOUND) / 2f;
 
 			LEAF_WIDTH = BALL_RADIUS / 2f;
 			LEAF_HEIGHT = BALL_RADIUS / 2f;
@@ -229,17 +251,20 @@ public class Game {
 			LEVEL_HEIGHT = SCREEN_WIDTH / 10f;
 		}
 
+		/**
+		 * 风速
+		 */
 		public static float WIND_SPEED;
 
 		public static float SCREEN_WIDTH, SCREEN_HEIGHT;
-		public static float BACKBOARD_WIDHT, BACKBOARD_HEIGHT, BACKBOARD_X,
-				BACKBOARD_Y;
-		public static float HOOP_WIDTH, HOOP_HEIGHT, HOOP_X, HOOP_Y,
-				HOOP_RADIUS;
-		public static float LEFT_HOOP_PX, LEFT_HOOP_MID_PX, MIDDLE_HOOP_PX,
-				RIGHT_HOOP_MID_PX, RIGHT_HOOP_PX, TOP_HOOP_PY,
-				COURT_UPPER_BOUND, // 场地上边缘
+		public static float BACKBOARD_WIDHT, BACKBOARD_HEIGHT, BACKBOARD_X, BACKBOARD_Y;
+		public static float HOOP_WIDTH, HOOP_HEIGHT, HOOP_X, HOOP_Y, HOOP_RADIUS;
+		public static float LEFT_HOOP_PX, LEFT_HOOP_MID_PX, MIDDLE_HOOP_PX, RIGHT_HOOP_MID_PX,
+				RIGHT_HOOP_PX, TOP_HOOP_PY, COURT_UPPER_BOUND, // 场地上边缘
 				COURT_MIDDLE_BOUND; // 场地中间
+		/**
+		 * 虚拟重力大小
+		 */
 		public static float GRAVITY = 10f;
 		/**
 		 * 投篮的仰角
@@ -255,34 +280,37 @@ public class Game {
 		public static float MOVE_TIME;
 
 		/**
-		 * #Tips# 篮球在投向篮筐过程中，由于透视，在屏幕上看起来越来越小，BALL_RADIUS 为篮球投出前
-		 * 显示的半径，透视效果应使得Ball在篮筐位置附近时半径小于Hoop的半径
+		 * #Tips# 篮球在投向篮筐过程中，由于透视，在屏幕上看起来越来越小，BALL_RADIUS
+		 * 为篮球投出前 显示的半径，透视效果应使得Ball在篮筐位置附近时半径小于Hoop的半径
 		 */
 		public static float BALL_RADIUS;
 		/** 可见3维区域的 z 坐标范围，最远即为篮板的 z 坐标，最近即为篮球初始位置 */
 		public static float FARTHEST, NEAREST;
 
+		/** 树叶的长宽 */
 		public static float LEAF_WIDTH, LEAF_HEIGHT;
 		/** 背景音乐，开 */
 		public static boolean GAME_MUSIC_ON;
 		/** 音效，开 */
 		public static boolean SOUND_EFFECT_ON;
+		/** 游戏是否暂停 */
 		public static boolean GAME_PAUSE;
 
-		// 显示时间数字大小
+		/** 显示时间数字大小 */
 		public static float TIME_NUM_WIDTH, TIME_NUM_HEIGHT;
-		// 显示分数大小
+		/** 显示分数大小 */
 		public static float SCORE_NUM_WIDTH, SCORE_NUM_HEIGHT;
 
-		// 显示进球提示大小
+		/** 显示进球提示大小 */
 		public static float HINT_WIDTH, HINT_HEIGHT;
 
-		// 显示关卡大小
+		/** 显示关卡大小 */
 		public static float LEVEL_WIDTH, LEVEL_HEIGHT;
 
-		// 是否为训练模式
+		/** 是否为训练模式 */
 		public static boolean IS_TRAIN;
 
+		/** 每个关卡剩余的时间 */
 		public static int GAME_REMAIN_TIME;
 	}
 }

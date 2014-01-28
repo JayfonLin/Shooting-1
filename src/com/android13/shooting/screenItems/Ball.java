@@ -4,7 +4,6 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Matrix;
 import android.graphics.Paint;
-import android.util.Log;
 
 import com.android13.shooting.Game;
 import com.android13.shooting.PlaySound;
@@ -14,7 +13,9 @@ import com.android13.shooting.res.BitmapPool;
 /**
  * 篮球
  * 
- * @author Tiga <liangkangabc@gmail.com>
+ * @author 11331197 林家访 <98905067@qq.com>
+ * @author 11331173 李明宽 <sysu_limingkuan@163.com>
+ * @author 11331185 连凌淦 <839021322@qq.com>
  * 
  */
 public class Ball extends ScreenItem {
@@ -61,7 +62,13 @@ public class Ball extends ScreenItem {
 	 * 获得篮框的一个实例
 	 */
 	public Hoop hoop = Hoop.getInstance();
+	/**
+	 * 获得分数提示的一个实例
+	 */
 	public Hint hint = Hint.getInstance();
+	/**
+	 * 获得分数的一个实例
+	 */
 	public Score score = Score.getInstance();
 	/**
 	 * 篮球投出去的最高点Y值
@@ -113,7 +120,6 @@ public class Ball extends ScreenItem {
 	public Ball() {
 		unShoot = true;
 		isGoal = false;
-		// unGoal = false;
 		temp_is_goal = false;
 		collideHoop = false;
 		collideGround = false;
@@ -142,7 +148,6 @@ public class Ball extends ScreenItem {
 
 		unShoot = true;
 		isGoal = false;
-		// unGoal = false;
 		temp_is_goal = false;
 		collideHoop = false;
 		collideGround = false;
@@ -158,7 +163,8 @@ public class Ball extends ScreenItem {
 		speedX = speedY = speedZ = 0;
 	}
 
-	protected void logic(Canvas canvas) {
+	@Override
+	protected void logic() {
 		if (x + Game.Constant.BALL_RADIUS * scaleFactor <= 0
 				|| x - Game.Constant.BALL_RADIUS * scaleFactor >= Game.Constant.SCREEN_WIDTH
 				|| y - Game.Constant.BALL_RADIUS * scaleFactor >= Game.Constant.SCREEN_HEIGHT) {
@@ -169,13 +175,12 @@ public class Ball extends ScreenItem {
 			reset();
 			return;
 		}
-		// Log.d("collide", "unShoot:"+Boolean.toString(unShoot));
+
 		if (!unShoot) {
 			changeSpeedY += (Game.Constant.GRAVITY * Game.Constant.MOVE_TIME);
 			speedY += changeSpeedY;
 			isDownWard = (speedY > 0f) ? true : false;
 			currentFrame = (currentFrame + 1) % 5;
-			// Log.d("collide", "isDownWard:" + Boolean.toString(isDownWard));
 			if (isDownWard) {
 				/**
 				 * 与篮框内侧碰撞
@@ -185,18 +190,14 @@ public class Ball extends ScreenItem {
 					dx, // X轴方向的距离
 					dy; // Y轴方向的距离
 
-					float speed = (float) Math.sqrt((double) speedX * speedX
-							+ speedY * speedY) * 0.7f;
+					float speed = (float) Math.sqrt((double) speedX * speedX + speedY * speedY) * 0.7f;
 					// 检测碰撞，篮框最左边
 					if ((bevel_edge = calculate_distance(x, y, hoop.getX()
 							- Game.Constant.HOOP_RADIUS * hoop.scaleFactor,
-							Game.Constant.TOP_HOOP_PY)) <= Game.Constant.BALL_RADIUS
-							* scaleFactor) {
+							Game.Constant.TOP_HOOP_PY)) <= Game.Constant.BALL_RADIUS * scaleFactor) {
 						playSound();
 						collideHoop = true;
-						dx = x
-								- (hoop.getX() - Game.Constant.HOOP_RADIUS
-										* hoop.scaleFactor);
+						dx = x - (hoop.getX() - Game.Constant.HOOP_RADIUS * hoop.scaleFactor);
 						dy = y - Game.Constant.TOP_HOOP_PY;
 						// 按入射方向的反方向弹回
 						speedX = speed * (dx / bevel_edge);
@@ -206,13 +207,10 @@ public class Ball extends ScreenItem {
 					// 检测碰撞，篮框最右边
 					else if ((bevel_edge = calculate_distance(x, y, hoop.getX()
 							+ Game.Constant.HOOP_RADIUS * hoop.scaleFactor,
-							Game.Constant.TOP_HOOP_PY)) <= Game.Constant.BALL_RADIUS
-							* scaleFactor) {
+							Game.Constant.TOP_HOOP_PY)) <= Game.Constant.BALL_RADIUS * scaleFactor) {
 						playSound();
 						collideHoop = true;
-						dx = x
-								- (hoop.getX() + Game.Constant.HOOP_RADIUS
-										* hoop.scaleFactor);
+						dx = x - (hoop.getX() + Game.Constant.HOOP_RADIUS * hoop.scaleFactor);
 						dy = y - Game.Constant.TOP_HOOP_PY;
 						// 按入射方向的反方向弹回
 						speedX = speed * (dx / bevel_edge);
@@ -221,8 +219,8 @@ public class Ball extends ScreenItem {
 					}
 					// 判断是否投篮得分
 					if (!temp_is_goal
-							&& (bevel_edge = calculate_distance(x, y,
-									hoop.getX(), Game.Constant.HOOP_Y)) <= Game.Constant.BALL_RADIUS) {
+							&& (bevel_edge = calculate_distance(x, y, hoop.getX(),
+									Game.Constant.HOOP_Y)) <= Game.Constant.BALL_RADIUS) {
 						temp_is_goal = isGoal = true;
 						speedZ = 0;
 					}
@@ -234,15 +232,13 @@ public class Ball extends ScreenItem {
 				else {
 
 					float bevel_edge, dx, dy;
-					float speed = (float) Math.sqrt((double) speedX * speedX
-							+ speedY * speedY) * 0.7f;
+					float speed = (float) Math.sqrt((double) speedX * speedX + speedY * speedY) * 0.7f;
 					/**
 					 * 与篮框外侧左边碰撞
 					 */
 					if ((bevel_edge = calculate_distance(x, y, hoop.getX()
 							- Game.Constant.HOOP_RADIUS * hoop.scaleFactor,
-							Game.Constant.TOP_HOOP_PY)) <= Game.Constant.BALL_RADIUS
-							* scaleFactor
+							Game.Constant.TOP_HOOP_PY)) <= Game.Constant.BALL_RADIUS * scaleFactor
 							&& !collideHoop) {
 						playSound();
 						collideHoop = true;
@@ -256,8 +252,7 @@ public class Ball extends ScreenItem {
 					 */
 					else if ((bevel_edge = calculate_distance(x, y, hoop.getX()
 							+ Game.Constant.HOOP_RADIUS * hoop.scaleFactor,
-							Game.Constant.TOP_HOOP_PY)) <= Game.Constant.BALL_RADIUS
-							* scaleFactor
+							Game.Constant.TOP_HOOP_PY)) <= Game.Constant.BALL_RADIUS * scaleFactor
 							&& !collideHoop) {
 						playSound();
 						collideHoop = true;
@@ -268,15 +263,12 @@ public class Ball extends ScreenItem {
 					/**
 					 * 与篮框外侧中间碰撞
 					 */
-					else if ((bevel_edge = calculate_distance(x, y,
-							Game.Constant.MIDDLE_HOOP_PX,
-							Game.Constant.TOP_HOOP_PY)) <= Game.Constant.BALL_RADIUS
-							* scaleFactor
+					else if ((bevel_edge = calculate_distance(x, y, Game.Constant.MIDDLE_HOOP_PX,
+							Game.Constant.TOP_HOOP_PY)) <= Game.Constant.BALL_RADIUS * scaleFactor
 							&& !collideHoop) {
 						playSound();
 						collideHoop = true;
-						dx = hoop.getX() + Game.Constant.HOOP_RADIUS
-								* hoop.scaleFactor - x;
+						dx = hoop.getX() + Game.Constant.HOOP_RADIUS * hoop.scaleFactor - x;
 						dy = Game.Constant.TOP_HOOP_PY - y;
 						speedX = speed * (dx / bevel_edge);
 						speedY = speed * (dy / bevel_edge);
@@ -286,27 +278,11 @@ public class Ball extends ScreenItem {
 				/**
 				 * 与场地上边界碰撞
 				 */
-				// Log.d("collide",
-				// "temp_is_goal :"+Boolean.toString(temp_is_goal));
-				// Log.d("collide",
-				// "collideHoop  :"+Boolean.toString(collideHoop));
-				// Log.d("collide",
-				// "isDownWard   :"+Boolean.toString(isDownWard));
-				// Log.d("collide",
-				// "collideGround:"+Boolean.toString(collideGround));
-				// Log.d("collide", "y:"+Float.toString(y));
-				// Log.d("collide",
-				// "UPPER:"+Float.toString(Game.Constant.COURT_UPPER_BOUND));
-				// Log.d("collide",
-				// "Upper-y:"+Float.toString(Game.Constant.COURT_UPPER_BOUND - y
-				// ));
-				// Log.d("collide",
-				// "Radius:"+Float.toString(Game.Constant.BALL_RADIUS *
-				// scaleFactor ));
 				if ((temp_is_goal || !collideHoop)
 						&& isDownWard
 						&& !collideGround
-						// && y < Game.Constant.COURT_UPPER_BOUND
+						// && y <
+						// Game.Constant.COURT_UPPER_BOUND
 						&& Game.Constant.COURT_UPPER_BOUND - y <= Game.Constant.BALL_RADIUS
 								* scaleFactor) {
 					playSound();
@@ -317,9 +293,9 @@ public class Ball extends ScreenItem {
 				/**
 				 * 与场地中间线碰撞
 				 */
-				if (!collideMiddle
-						&& isDownWard
-						// && y < Game.Constant.COURT_MIDDLE_BOUND
+				if (!collideMiddle && isDownWard
+				// && y <
+				// Game.Constant.COURT_MIDDLE_BOUND
 						&& Game.Constant.COURT_MIDDLE_BOUND - y <= Game.Constant.BALL_RADIUS
 								* scaleFactor) {
 					playSound();
@@ -342,19 +318,16 @@ public class Ball extends ScreenItem {
 		}
 
 		// 根据篮球所在z轴位置，设置放缩因子
-		scaleFactor = (Game.Constant.SCREEN_HEIGHT - z)
-				/ Game.Constant.SCREEN_HEIGHT;
-		// System.out.println(hoop.goalCount + " " + hoop.missCount);
+		scaleFactor = (Game.Constant.SCREEN_HEIGHT - z) / Game.Constant.SCREEN_HEIGHT;
 		if (isGoal) {
 			isGoal = false;
 			hoop.isGoal = true;
-			Log.i("lin", "goal");
 			hoop.goalCount++;
 			hoop.missCount = 0;
 			all_goal_count++;
-			
+
 			int finalScore = 0;
-			if(Game.getLevel() >= 3){
+			if (Game.getLevel() >= 3) {
 				finalScore = 3;
 			} else {
 				finalScore = 2;
@@ -367,23 +340,35 @@ public class Ball extends ScreenItem {
 
 	@Override
 	public void draw(Canvas canvas, Paint paint) {
-		logic(canvas);
+		logic();
 		Matrix matrix = new Matrix();
 		matrix.postScale(scaleFactor, scaleFactor);
 
-		canvas.drawBitmap(Bitmap.createBitmap(bmps[currentFrame], 0, 0,
-				bmpWidth, bmpHeight, matrix, true), x - bmpWidth * scaleFactor
-				/ 2, y - bmpHeight * scaleFactor / 2, paint);
+		canvas.drawBitmap(
+				Bitmap.createBitmap(bmps[currentFrame], 0, 0, bmpWidth, bmpHeight, matrix, true), x
+						- bmpWidth * scaleFactor / 2, y - bmpHeight * scaleFactor / 2, paint);
 	}
 
+	/**
+	 * 计算两点间距离
+	 * 
+	 * @param x1
+	 * @param y1
+	 * @param x2
+	 * @param y2
+	 * @return 两点间的距离
+	 */
 	public float calculate_distance(float x1, float y1, float x2, float y2) {
 		return (float) Math.sqrt((x2 - x1) * (x2 - x1) + (y2 - y1) * (y2 - y1));
 	}
 
+	/**
+	 * 播放篮球碰撞的音效
+	 */
 	void playSound() {
 		if (Game.Constant.SOUND_EFFECT_ON) {
 			if (PlaySound.soundPool == null) {
-				System.out.println("error");
+				System.err.println("error");
 			} else {
 				PlaySound.play("ball", 0);
 			}

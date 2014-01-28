@@ -33,7 +33,9 @@ import com.android13.shooting.sql.SqlOpenHelper;
 /**
  * 游戏的入口Activity
  * 
- * @author Tiga <liangkangabc@gmail.com>
+ * @author 11331197 林家访 <98905067@qq.com>
+ * @author 11331173 李明宽 <sysu_limingkuan@163.com>
+ * @author 11331185 连凌淦 <839021322@qq.com>
  * 
  */
 public class MainActivity extends Activity {
@@ -44,23 +46,21 @@ public class MainActivity extends Activity {
 
 	private boolean pause_temp;
 	private MediaPlayer mediaPlayer;
-	MainSurfaceView mainSurfaceView;
-	PopupWindow mPopWin;
-	ImageView resumeIV, replayIV;
-	Bundle initial_state;
-	ReadyGo readyGo;
+	private MainSurfaceView mainSurfaceView;
+	private PopupWindow mPopWin;
+	private ImageView resumeIV, replayIV;
+	private ReadyGo readyGo;
 
 	Handler handler = new Handler() {
 		@Override
 		public void handleMessage(Message msg) {
-			System.out.println(Game.Constant.GAME_PAUSE);
 			switch (msg.what) {
 			case MESSAGE_NEXTLEVEL:
 			case MESSAGE_RESTART:
 				mainSurfaceView.forceRefreshScreen();
 				if (!Game.Constant.GAME_PAUSE) {
 					if (readyGo == null) {
-						readyGo = new ReadyGo(msg.what);
+						readyGo = new ReadyGo();
 					}
 					handler.post(readyGo);
 				}
@@ -78,17 +78,14 @@ public class MainActivity extends Activity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		initial_state = savedInstanceState;
 
 		PlaySound.init(this, 5, AudioManager.STREAM_MUSIC, 0);
-		mediaPlayer = MediaPlayer.create(getApplicationContext(),
-				R.raw.music_game);
+		mediaPlayer = MediaPlayer.create(getApplicationContext(), R.raw.music_game);
 		mediaPlayer.setLooping(true);
 		startMusic();
 
 		Intent intent = getIntent();
 		int level = intent.getIntExtra("level", 1);
-		// 2014年1月21日14:26:46 以第几关初始化游戏
 
 		Game.Constant.GAME_REMAIN_TIME = 60;
 		Game.init(this, level);
@@ -97,12 +94,12 @@ public class MainActivity extends Activity {
 		setContentView(mainSurfaceView);
 	}
 
+	/** 启动背景音乐 */
 	private void startMusic() {
 		if (Game.Constant.GAME_MUSIC_ON) {
 			if (mediaPlayer != null) {
 				mediaPlayer.stop();
 			}
-
 			try {
 				mediaPlayer.prepare();
 			} catch (IllegalStateException e) {
@@ -125,9 +122,8 @@ public class MainActivity extends Activity {
 				}
 			}
 
-			LinearLayout popWin_layout = (LinearLayout) MainActivity.this
-					.getLayoutInflater().inflate(R.layout.pause_popwin_layout,
-							null);
+			LinearLayout popWin_layout = (LinearLayout) MainActivity.this.getLayoutInflater()
+					.inflate(R.layout.pause_popwin_layout, null);
 			mPopWin = new PopupWindow(popWin_layout, LayoutParams.MATCH_PARENT,
 					LayoutParams.MATCH_PARENT);
 
@@ -178,7 +174,6 @@ public class MainActivity extends Activity {
 			if (mediaPlayer != null) {
 				mediaPlayer.stop();
 			}
-
 		}
 		super.onDestroy();
 	}
@@ -211,21 +206,25 @@ public class MainActivity extends Activity {
 		super.onResume();
 	}
 
+	/** 关闭暂停菜单 */
 	private void closePopWin() {
 		if (mPopWin != null && mPopWin.isShowing()) {
 			mPopWin.dismiss();
 		}
 	}
 
+	/**
+	 * 游戏结束的时候弹出显示分数的对话框
+	 */
 	class ShowScore implements Runnable {
-		PopupWindow scorePopupWin;
-		TextView scoreTextView;
-		Button menuButton;
-		Button saveButton;
-		ImageView week_new, history_new;
-		EditText nameEditText = new EditText(MainActivity.this);
-		SqlOpenHelper sqlOpenHelper = new SqlOpenHelper(MainActivity.this);
-		int score;
+		private PopupWindow scorePopupWin;
+		private TextView scoreTextView;
+		private Button menuButton;
+		private Button saveButton;
+		private ImageView week_new, history_new;
+		private EditText nameEditText = new EditText(MainActivity.this);
+		private SqlOpenHelper sqlOpenHelper = new SqlOpenHelper(MainActivity.this);
+		private int score;
 		DialogInterface.OnClickListener okClickListener = new DialogInterface.OnClickListener() {
 
 			@Override
@@ -234,8 +233,7 @@ public class MainActivity extends Activity {
 				if (name.equals("")) {
 					name = "noname";
 				}
-				Data data = new Data(-1, name, score,
-						System.currentTimeMillis());
+				Data data = new Data(-1, name, score, System.currentTimeMillis());
 				sqlOpenHelper.insert(data);
 				saveButton.setVisibility(View.INVISIBLE);
 				dialog.dismiss();
@@ -248,32 +246,29 @@ public class MainActivity extends Activity {
 				dialog.dismiss();
 			}
 		};
-		AlertDialog saveDialog = new AlertDialog.Builder(MainActivity.this)
-				.setTitle("请输入名字：").setView(nameEditText)
-				.setPositiveButton("确定", okClickListener)
+		AlertDialog saveDialog = new AlertDialog.Builder(MainActivity.this).setTitle("请输入名字：")
+				.setView(nameEditText).setPositiveButton("确定", okClickListener)
 				.setNegativeButton("取消", cancelClickListener).create();
 
 		@Override
 		public void run() {
 			score = Score.getInstance().getScore();
 
-			LinearLayout popWin_layout = (LinearLayout) getLayoutInflater()
-					.inflate(R.layout.sort_score, null);
-			scorePopupWin = new PopupWindow(popWin_layout,
-					LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
+			LinearLayout popWin_layout = (LinearLayout) getLayoutInflater().inflate(
+					R.layout.sort_score, null);
+			scorePopupWin = new PopupWindow(popWin_layout, LayoutParams.MATCH_PARENT,
+					LayoutParams.MATCH_PARENT);
 
 			scorePopupWin.setOutsideTouchable(true);
 			scorePopupWin.setFocusable(true);
 			scorePopupWin.showAtLocation(mainSurfaceView, Gravity.CENTER, 0, 0);
 			scorePopupWin.update();
 
-			scoreTextView = (TextView) popWin_layout
-					.findViewById(R.id.tv_score);
+			scoreTextView = (TextView) popWin_layout.findViewById(R.id.tv_score);
 			menuButton = (Button) popWin_layout.findViewById(R.id.menu_btn);
 			saveButton = (Button) popWin_layout.findViewById(R.id.save_btn);
 			week_new = (ImageView) popWin_layout.findViewById(R.id.week_record);
-			history_new = (ImageView) popWin_layout
-					.findViewById(R.id.history_record);
+			history_new = (ImageView) popWin_layout.findViewById(R.id.history_record);
 
 			scoreTextView.setText(Integer.toString(score));
 			saveButton.setOnClickListener(new OnClickListener() {
@@ -300,42 +295,32 @@ public class MainActivity extends Activity {
 		}
 	}
 
+	/** 游戏开始或者暂停后恢复的时候准备界面 */
 	class ReadyGo implements Runnable {
 
 		private PopupWindow popupWin;
 		private int index;
 		private ImageView cd;
-		private int msg;
-
-		public ReadyGo(int msg) {
-			this.msg = msg;
-		}
 
 		@Override
 		public void run() {
-
 			Game.Constant.GAME_PAUSE = true;
 			if (Game.Constant.GAME_MUSIC_ON) {
 				if (mediaPlayer != null) {
 					mediaPlayer.stop();
 				}
 			}
-
-			LinearLayout popWin_layout = (LinearLayout) getLayoutInflater()
-					.inflate(R.layout.between_level, null);
-			popupWin = new PopupWindow(popWin_layout,
-					LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
-
+			LinearLayout popWin_layout = (LinearLayout) getLayoutInflater().inflate(
+					R.layout.between_level, null);
+			popupWin = new PopupWindow(popWin_layout, LayoutParams.MATCH_PARENT,
+					LayoutParams.MATCH_PARENT);
 			popupWin.setOutsideTouchable(true);
-
 			popupWin.setFocusable(true);
-
 			popupWin.showAtLocation(mainSurfaceView, Gravity.CENTER, 0, 0);
 			popupWin.update();
 
 			index = 1;
 			AnimationListener animationListener = new AnimationListener() {
-
 				@Override
 				public void onAnimationStart(Animation animation) {
 				}
@@ -346,54 +331,47 @@ public class MainActivity extends Activity {
 
 				@Override
 				public void onAnimationEnd(Animation animation) {
-					ScaleAnimation scaleAnimation = new ScaleAnimation(1.0f,
-							2.0f, 1.0f, 2.0f, Animation.RELATIVE_TO_SELF, 0.5f,
-							Animation.RELATIVE_TO_SELF, 0.5f);
+					ScaleAnimation scaleAnimation = new ScaleAnimation(1.0f, 2.0f, 1.0f, 2.0f,
+							Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
 					scaleAnimation.setDuration(1000);
 					scaleAnimation.setAnimationListener(this);
 					switch (index) {
 					case 1:
 						index++;
-						cd.setImageDrawable(getResources().getDrawable(
-								R.drawable.cd_2));
+						cd.setImageDrawable(getResources().getDrawable(R.drawable.cd_2));
 						cd.startAnimation(scaleAnimation);
 						break;
 					case 2:
 						index++;
-						cd.setImageDrawable(getResources().getDrawable(
-								R.drawable.cd_1));
+						cd.setImageDrawable(getResources().getDrawable(R.drawable.cd_1));
 						cd.startAnimation(scaleAnimation);
 						break;
 					case 3:
 						index++;
-						cd.setImageDrawable(getResources().getDrawable(
-								R.drawable.cd_go));
+						cd.setImageDrawable(getResources().getDrawable(R.drawable.cd_go));
 						cd.startAnimation(scaleAnimation);
 						break;
 					case 4:
 						popupWin.dismiss();
-
 						Game.Constant.GAME_PAUSE = false;
 						if (Game.Constant.GAME_MUSIC_ON) {
 							if (!mediaPlayer.isPlaying()) {
 								startMusic();
 							}
 						}
-
+						break;
+					default:
 						break;
 					}
 				}
 			};
 
 			cd = (ImageView) popWin_layout.findViewById(R.id.imageView1);
-			ScaleAnimation scaleAnimation = new ScaleAnimation(1.0f, 2.0f,
-					1.0f, 2.0f, Animation.RELATIVE_TO_SELF, 0.5f,
-					Animation.RELATIVE_TO_SELF, 0.5f);
+			ScaleAnimation scaleAnimation = new ScaleAnimation(1.0f, 2.0f, 1.0f, 2.0f,
+					Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
 			scaleAnimation.setDuration(1000);
 			scaleAnimation.setAnimationListener(animationListener);
 			cd.startAnimation(scaleAnimation);
 		}
-
 	}
-
 }

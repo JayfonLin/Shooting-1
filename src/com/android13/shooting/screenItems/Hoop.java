@@ -12,16 +12,16 @@ import android.graphics.Paint;
 /**
  * 篮圈，Singleton
  * 
- * @author Tiga <liangkangabc@gmail.com>
+ * @author 11331197 林家访 <98905067@qq.com>
+ * @author 11331173 李明宽 <sysu_limingkuan@163.com>
+ * @author 11331185 连凌淦 <839021322@qq.com>
  * 
  */
 public class Hoop extends ScreenItem {
 
 	private int currentFrame;
 	/**
-	 * 移动方向：0 不动
-	 *          1 向左
-	 *          2 向右
+	 * 移动方向：0 不动 1 向左 2 向右
 	 */
 	public int move_direction;
 	public float speedX;
@@ -39,8 +39,7 @@ public class Hoop extends ScreenItem {
 	private long lastTime = System.currentTimeMillis();
 	private boolean isBigger = false;
 	private boolean isSmaller = false;
-	
-	
+
 	public static Hoop getInstance() {
 		if (instance == null) {
 			synchronized (Hoop.class) {
@@ -80,15 +79,13 @@ public class Hoop extends ScreenItem {
 				Matrix matrix = new Matrix();
 				matrix.postScale(scaleFactor, scaleFactor);
 
-				canvas.drawBitmap(Bitmap.createBitmap(bmps[currentFrame], 0, 0,
-						bmpWidth, bmpHeight, matrix, true), 
-						x - bmpWidth*scaleFactor/2
-						, y - bmpHeight/2, paint);
+				canvas.drawBitmap(Bitmap.createBitmap(bmps[currentFrame], 0, 0, bmpWidth,
+						bmpHeight, matrix, true), x - bmpWidth * scaleFactor / 2,
+						y - bmpHeight / 2, paint);
 			} else {
 				scaleFactor = 1f;
 				isBigger = false;
-				canvas.drawBitmap(bmps[currentFrame], x - bmpWidth / 2, y
-						- bmpHeight / 2, paint);
+				canvas.drawBitmap(bmps[currentFrame], x - bmpWidth / 2, y - bmpHeight / 2, paint);
 			}
 		} else if (isSmaller) {
 			smallerTimer += curTimer - lastTime;
@@ -97,19 +94,16 @@ public class Hoop extends ScreenItem {
 				Matrix matrix = new Matrix();
 				matrix.postScale(scaleFactor, scaleFactor);
 
-				canvas.drawBitmap(Bitmap.createBitmap(bmps[currentFrame], 0, 0,
-						bmpWidth, bmpHeight, matrix, true),
-						x - bmpWidth * scaleFactor / 2,
+				canvas.drawBitmap(Bitmap.createBitmap(bmps[currentFrame], 0, 0, bmpWidth,
+						bmpHeight, matrix, true), x - bmpWidth * scaleFactor / 2,
 						y - bmpHeight / 2, paint);
 			} else {
 				scaleFactor = 1f;
 				isSmaller = false;
-				canvas.drawBitmap(bmps[currentFrame], x - bmpWidth / 2, y
-						- bmpHeight / 2, paint);
+				canvas.drawBitmap(bmps[currentFrame], x - bmpWidth / 2, y - bmpHeight / 2, paint);
 			}
 		} else {
-			canvas.drawBitmap(bmps[currentFrame], x - bmpWidth / 2, y
-					- bmpHeight / 2, paint);
+			canvas.drawBitmap(bmps[currentFrame], x - bmpWidth / 2, y - bmpHeight / 2, paint);
 		}
 		lastTime = System.currentTimeMillis();
 	}
@@ -139,8 +133,6 @@ public class Hoop extends ScreenItem {
 				}
 			}
 		}
-
-		// 2014年1月21日14:25:15 如果大于第二关开始检测连续投进或者连续丢分
 		if (Game.getLevel() >= 2) {
 			if (goalCount >= 3) {
 				goalCount = 0;
@@ -154,31 +146,30 @@ public class Hoop extends ScreenItem {
 				smallerTimer = 0;
 			}
 		}
-		
-		//如果是第3关及以上的关卡，篮筐左右移动
-		if (Game.getLevel() >= 3){
-			if (move_direction == 0){
+
+		// 如果是第3关及以上的关卡，篮筐左右移动
+		if (Game.getLevel() >= 3) {
+			if (move_direction == 0) {
 				move_direction = 1;
-			}else if (move_direction == 1){
-				if (x <= Game.Constant.SCREEN_WIDTH/4+Game.Constant.BACKBOARD_WIDHT/4){
+			} else if (move_direction == 1) {
+				if (x <= Game.Constant.SCREEN_WIDTH / 4 + Game.Constant.BACKBOARD_WIDHT / 4) {
 					move_direction = 2;
 				}
-			}else if (move_direction == 2){
-				if (x >= Game.Constant.SCREEN_WIDTH*3/4-Game.Constant.BACKBOARD_WIDHT/4){
+			} else if (move_direction == 2) {
+				if (x >= Game.Constant.SCREEN_WIDTH * 3 / 4 - Game.Constant.BACKBOARD_WIDHT / 4) {
 					move_direction = 1;
 				}
 			}
-			
-			if (move_direction == 1){
+
+			if (move_direction == 1) {
 				x -= speedX;
-			}else if (move_direction == 2){
+			} else if (move_direction == 2) {
 				x += speedX;
 			}
 		}
-		
-		
+
 	}
-	
+
 	@Override
 	public void release() {
 		instance = null;

@@ -9,6 +9,14 @@ import com.android13.shooting.Game;
 import com.android13.shooting.R;
 import com.android13.shooting.res.BitmapPool;
 
+/**
+ * 分数显示，Singleton
+ * 
+ * @author 11331197 林家访 <98905067@qq.com>
+ * @author 11331173 李明宽 <sysu_limingkuan@163.com>
+ * @author 11331185 连凌淦 <839021322@qq.com>
+ * 
+ */
 public class Score extends ScreenItem {
 	private int score;
 	private int hundredFlame;
@@ -50,16 +58,23 @@ public class Score extends ScreenItem {
 		Matrix matrix = new Matrix();
 		matrix.setScale(scale, scale);
 		canvas.drawBitmap(Bitmap.createBitmap(bmps[hundredFlame], 0, 0,
-				bmps[hundredFlame].getWidth(), bmps[hundredFlame].getHeight(),
-				matrix, true), x - bmps[0].getWidth() * scale * 2, y, paint);
-		canvas.drawBitmap(Bitmap.createBitmap(bmps[tenFlame], 0, 0,
-				bmps[tenFlame].getWidth(), bmps[tenFlame].getHeight(), matrix,
-				true), x - bmps[0].getWidth() * scale, y, paint);
-		canvas.drawBitmap(Bitmap.createBitmap(bmps[bitFlame], 0, 0,
-				bmps[bitFlame].getWidth(), bmps[bitFlame].getHeight(), matrix,
-				true), x, y, paint);
+				bmps[hundredFlame].getWidth(), bmps[hundredFlame].getHeight(), matrix, true), x
+				- bmps[0].getWidth() * scale * 2, y, paint);
+		canvas.drawBitmap(
+				Bitmap.createBitmap(bmps[tenFlame], 0, 0, bmps[tenFlame].getWidth(),
+						bmps[tenFlame].getHeight(), matrix, true), x - bmps[0].getWidth() * scale,
+				y, paint);
+		canvas.drawBitmap(
+				Bitmap.createBitmap(bmps[bitFlame], 0, 0, bmps[bitFlame].getWidth(),
+						bmps[bitFlame].getHeight(), matrix, true), x, y, paint);
 	}
 
+	/**
+	 * 进球后加分，总分不能超过3位数
+	 * 
+	 * @param addGrade
+	 *            添加的分数
+	 */
 	public void addScore(int addGrade) {
 		score += addGrade;
 		if (score > 999) {
@@ -70,10 +85,21 @@ public class Score extends ScreenItem {
 		bitFlame = score % 100 % 10;
 	}
 
+	/**
+	 * 获取当前分数
+	 * 
+	 * @return 当前的得分
+	 */
 	public int getScore() {
 		return score;
 	}
 
+	/**
+	 * 设置当前的得分，多用于置零
+	 * 
+	 * @param parament
+	 *            要设置的得分
+	 */
 	public void setScore(int parament) {
 		score = parament;
 		addScore(0);

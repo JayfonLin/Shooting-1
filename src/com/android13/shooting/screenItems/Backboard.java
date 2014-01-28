@@ -10,29 +10,33 @@ import android.graphics.Paint;
 
 /**
  * 篮板，Singleton
- * @author Tiga <liangkangabc@gmail.com>
- *
+ * 
+ * @author 11331197 林家访 <98905067@qq.com>
+ * @author 11331173 李明宽 <sysu_limingkuan@163.com>
+ * @author 11331185 连凌淦 <839021322@qq.com>
+ * 
  */
 public class Backboard extends ScreenItem {
-	
+
 	private static Backboard instance;
+
 	public static Backboard getInstance() {
-		if(instance == null) {
+		if (instance == null) {
 			synchronized (Backboard.class) {
-				if(instance == null)
+				if (instance == null)
 					instance = new Backboard();
 			}
 		}
 		return instance;
 	}
-	
+
 	private Backboard() {
 		this.x = Game.Constant.BACKBOARD_X;
 		this.y = Game.Constant.BACKBOARD_Y;
 		this.z = Game.Constant.FARTHEST;
 		bmps = new Bitmap[1];
 		bmps[0] = BitmapPool.getBitmap(R.drawable.backboard);
-		
+
 		bmpWidth = bmps[0].getWidth();
 		bmpHeight = bmps[0].getHeight();
 	}
@@ -41,11 +45,11 @@ public class Backboard extends ScreenItem {
 	public void draw(Canvas canvas, Paint paint) {
 		canvas.drawBitmap(bmps[0], x - bmpWidth / 2, y - bmpHeight / 2, paint);
 	}
-	
+
 	@Override
 	public void release() {
 		instance = null;
 		super.release();
 	}
-	
+
 }

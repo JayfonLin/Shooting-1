@@ -23,11 +23,12 @@ import com.android13.shooting.screenItems.Timer;
 /**
  * 显示游戏主体画面的SurfaceView
  * 
- * @author Tiga <liangkangabc@gmail.com>
+ * @author 11331197 林家访 <98905067@qq.com>
+ * @author 11331173 李明宽 <sysu_limingkuan@163.com>
+ * @author 11331185 连凌淦 <839021322@qq.com>
  * 
  */
-public class MainSurfaceView extends SurfaceView implements Callback, Runnable,
-		OnTouchListener {
+public class MainSurfaceView extends SurfaceView implements Callback, Runnable, OnTouchListener {
 
 	private boolean flag;
 	private boolean isBegin;
@@ -74,8 +75,7 @@ public class MainSurfaceView extends SurfaceView implements Callback, Runnable,
 	}
 
 	@Override
-	public void surfaceChanged(SurfaceHolder holder, int format, int width,
-			int height) {
+	public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
 	}
 
 	@Override

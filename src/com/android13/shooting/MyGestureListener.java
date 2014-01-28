@@ -1,27 +1,26 @@
 ﻿package com.android13.shooting;
 
 import java.util.ArrayList;
-import java.util.List;
-import com.android13.shooting.Game.Constant;
-import com.android13.shooting.screenItems.Ball;
-import com.android13.shooting.screenItems.Hoop;
-import com.android13.shooting.screenItems.ScreenItem;
-import com.android13.shooting.screenItems.Timer;
 
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 
+import com.android13.shooting.Game.Constant;
+import com.android13.shooting.screenItems.Ball;
+
+/**
+ * 手指滑动的监听器，判断手指滑动并且给球初速度
+ * @author 11331197 林家访 <98905067@qq.com>
+ * @author 11331173 李明宽 <sysu_limingkuan@163.com>
+ * @author 11331185 连凌淦 <839021322@qq.com>
+ *
+ */
 public class MyGestureListener extends GestureDetector.SimpleOnGestureListener {
-	MainSurfaceView mainSurfaceView;
-	List<ScreenItem> sortedItems = Game.getSortedItems();
-	Hoop hoop = Hoop.getInstance();
-	int itemNum = sortedItems.size();
-	final float initialSpeed = -20f;
-	ArrayList<Ball> balls;
+
+	private ArrayList<Ball> balls;
 
 	public MyGestureListener(MainSurfaceView pMainSurfaceView) {
 		super();
-		mainSurfaceView = pMainSurfaceView;
 		balls = Game.balls;
 	}
 
@@ -60,7 +59,6 @@ public class MyGestureListener extends GestureDetector.SimpleOnGestureListener {
 			}
 		}
 		return true;
-
 	}
 
 	@Override

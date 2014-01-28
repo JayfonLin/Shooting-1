@@ -8,6 +8,14 @@ import com.android13.shooting.Game;
 import com.android13.shooting.R;
 import com.android13.shooting.res.BitmapPool;
 
+/**
+ * 篮球进框后的提示，Singleton
+ * 
+ * @author 11331197 林家访 <98905067@qq.com>
+ * @author 11331173 李明宽 <sysu_limingkuan@163.com>
+ * @author 11331185 连凌淦 <839021322@qq.com>
+ * 
+ */
 public class Hint extends ScreenItem {
 	private float speedY;
 
@@ -30,8 +38,7 @@ public class Hint extends ScreenItem {
 
 	private Hint() {
 		this.x = Game.Constant.HOOP_X;
-		this.y = Game.Constant.HOOP_Y + Game.Constant.HOOP_HEIGHT
-				- Game.Constant.HINT_HEIGHT;
+		this.y = Game.Constant.HOOP_Y + Game.Constant.HOOP_HEIGHT - Game.Constant.HINT_HEIGHT;
 		this.z = Game.Constant.NEAREST;
 		bmps = new Bitmap[2];
 		for (int i = 0; i < 2; ++i)
@@ -47,32 +54,25 @@ public class Hint extends ScreenItem {
 	public void draw(Canvas canvas, Paint paint) {
 		logic();
 		if (score == 2) {
-			canvas.drawBitmap(bmps[0], x - bmpWidth / 2, y - bmpHeight / 2,
-					paint);
+			canvas.drawBitmap(bmps[0], x - bmpWidth / 2, y - bmpHeight / 2, paint);
 		} else if (score == 3) {
-			canvas.drawBitmap(bmps[1], x - bmpWidth / 2, y - bmpHeight / 2,
-					paint);
+			canvas.drawBitmap(bmps[1], x - bmpWidth / 2, y - bmpHeight / 2, paint);
 		}
 	}
 
 	@Override
 	protected void logic() {
-
 		// 得分
 		if (isGoal) {
 			speedY = 3f;
-			this.y = Game.Constant.HOOP_Y + Game.Constant.HOOP_HEIGHT
-					- Game.Constant.HINT_HEIGHT;
+			this.y = Game.Constant.HOOP_Y + Game.Constant.HOOP_HEIGHT - Game.Constant.HINT_HEIGHT;
 			isGoal = false;
 		}
-
 		if (this.y >= Game.Constant.HOOP_Y + Game.Constant.HOOP_HEIGHT) {
 			speedY = 0f;
-			this.y = Game.Constant.HOOP_Y + Game.Constant.HOOP_HEIGHT
-					- Game.Constant.HINT_HEIGHT;
+			this.y = Game.Constant.HOOP_Y + Game.Constant.HOOP_HEIGHT - Game.Constant.HINT_HEIGHT;
 			score = 0;
 		}
-
 		y += speedY;
 	}
 

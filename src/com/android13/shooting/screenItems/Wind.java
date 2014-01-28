@@ -1,15 +1,22 @@
 package com.android13.shooting.screenItems;
 
 import java.util.Iterator;
-import java.util.Random;
 import java.util.Vector;
-
-import com.android13.shooting.Game;
-import com.android13.shooting.PlaySound;
 
 import android.graphics.Canvas;
 import android.graphics.Paint;
 
+import com.android13.shooting.Game;
+import com.android13.shooting.PlaySound;
+
+/**
+ * 风，Singleton
+ * 
+ * @author 11331197 林家访 <98905067@qq.com>
+ * @author 11331173 李明宽 <sysu_limingkuan@163.com>
+ * @author 11331185 连凌淦 <839021322@qq.com>
+ * 
+ */
 public class Wind extends ScreenItem {
 
 	public final static int WIND_STOP = 0;
@@ -22,7 +29,6 @@ public class Wind extends ScreenItem {
 	private long soundTimer;
 	private long postTime;
 	private Vector<Leaf> leaves;
-	private Random random = new Random();
 	private static Wind instance;
 
 	// 实现单例模式
@@ -89,7 +95,7 @@ public class Wind extends ScreenItem {
 			soundTimer = 0;
 			if (Game.Constant.SOUND_EFFECT_ON) {
 				if (PlaySound.soundPool == null) {
-					System.out.println("error");
+					System.err.println("error");
 				} else if (state != WIND_STOP) {
 					PlaySound.play("wind", 0);
 				}
@@ -99,6 +105,9 @@ public class Wind extends ScreenItem {
 		postTime = curTime;
 	}
 
+	/**
+	 * 改变风的方向
+	 */
 	private void change_direction() {
 		if (state == WIND_DIRECTION_RIGHT) {
 			state = WIND_DIRECTION_LEFT;

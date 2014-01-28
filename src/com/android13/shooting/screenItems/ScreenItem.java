@@ -7,7 +7,9 @@ import android.graphics.Paint;
 /**
  * 所有在画面上展示的Item都需要继承该抽象类， 画面上的Item按照 z 坐标有序存储在Game.sortedItems中
  * 
- * @author Tiga <liangkangabc@gmail.com>
+ * @author 11331197 林家访 <98905067@qq.com>
+ * @author 11331173 李明宽 <sysu_limingkuan@163.com>
+ * @author 11331185 连凌淦 <839021322@qq.com>
  * 
  */
 public abstract class ScreenItem implements Comparable<ScreenItem> {

@@ -1,5 +1,13 @@
 ﻿package com.android13.shooting.sql;
 
+/**
+ * 数据库里存的每一项
+ * 
+ * @author 11331197 林家访 <98905067@qq.com>
+ * @author 11331173 李明宽 <sysu_limingkuan@163.com>
+ * @author 11331185 连凌淦 <839021322@qq.com>
+ * 
+ */
 public class Data {
 	private long id;
 	private String name;

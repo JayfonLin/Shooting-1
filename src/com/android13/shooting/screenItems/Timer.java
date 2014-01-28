@@ -9,6 +9,14 @@ import com.android13.shooting.Game;
 import com.android13.shooting.R;
 import com.android13.shooting.res.BitmapPool;
 
+/**
+ * 计时器，Singleton
+ * 
+ * @author 11331197 林家访 <98905067@qq.com>
+ * @author 11331173 李明宽 <sysu_limingkuan@163.com>
+ * @author 11331185 连凌淦 <839021322@qq.com>
+ * 
+ */
 public class Timer extends ScreenItem {
 
 	private static Timer instance;
@@ -42,10 +50,19 @@ public class Timer extends ScreenItem {
 		setRemainingTime(12);
 	}
 
+	/**
+	 * @return 当前剩余时间
+	 */
 	public int getTime() {
 		return remainingTime;
 	}
 
+	/**
+	 * 设置当前剩余时间，并初始化定时器
+	 * 
+	 * @param remainingTime
+	 *            剩余时间
+	 */
 	public void setRemainingTime(int remainingTime) {
 		this.remainingTime = remainingTime;
 		if (this.remainingTime > 99) {
@@ -78,20 +95,20 @@ public class Timer extends ScreenItem {
 
 		Matrix matrix = new Matrix();
 		matrix.postScale(0.5f, 0.5f);
-		canvas.drawBitmap(Bitmap.createBitmap(bmps[bitFlame], 0, 0,
-				bmps[bitFlame].getWidth(), bmps[bitFlame].getHeight(), matrix,
-				true), x, y, paint);
-		canvas.drawBitmap(Bitmap.createBitmap(bmps[tenFlame], 0, 0,
-				bmps[tenFlame].getWidth(), bmps[tenFlame].getHeight(), matrix,
-				true), x - bmps[0].getWidth() / 2, y, paint);
-
 		canvas.drawBitmap(
-				Bitmap.createBitmap(timeBmp, 0, 0, timeBmp.getWidth(),
-						timeBmp.getHeight(), matrix, true),
-				x - bmps[0].getWidth() / 2 - timeBmp.getWidth() / 2, y, paint);
+				Bitmap.createBitmap(bmps[bitFlame], 0, 0, bmps[bitFlame].getWidth(),
+						bmps[bitFlame].getHeight(), matrix, true), x, y, paint);
+		canvas.drawBitmap(
+				Bitmap.createBitmap(bmps[tenFlame], 0, 0, bmps[tenFlame].getWidth(),
+						bmps[tenFlame].getHeight(), matrix, true), x - bmps[0].getWidth() / 2, y,
+				paint);
+
+		canvas.drawBitmap(Bitmap.createBitmap(timeBmp, 0, 0, timeBmp.getWidth(),
+				timeBmp.getHeight(), matrix, true), x - bmps[0].getWidth() / 2 - timeBmp.getWidth()
+				/ 2, y, paint);
 	}
 
-	// 判断计时器是否结束
+	/** 判断计时器是否结束 */
 	public boolean isOverTime() {
 		return !Game.Constant.IS_TRAIN && this.remainingTime <= 0;
 	}
