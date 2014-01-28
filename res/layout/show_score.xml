@@ -43,9 +43,9 @@
                 android:id="@+id/rank"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textSize="20sp"
+                android:text="排名"
                 android:textColor="#101010"
-                android:text="排名" />
+                android:textSize="20sp" />
 
             <TextView
                 android:id="@+id/name"
@@ -53,9 +53,9 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentTop="true"
                 android:layout_centerHorizontal="true"
-                android:textSize="20sp"
+                android:text="名字"
                 android:textColor="#101010"
-                android:text="名字" />
+                android:textSize="20sp" />
 
             <TextView
                 android:id="@+id/score"
@@ -63,9 +63,9 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
                 android:layout_alignParentTop="true"
-                android:textSize="20sp"
+                android:text="分数"
                 android:textColor="#101010"
-                android:text="分数" />
+                android:textSize="20sp" />
         </RelativeLayout>
 
         <ListView
@@ -88,7 +88,6 @@
             android:layout_centerHorizontal="true"
             android:layout_marginTop="10dp"
             android:background="@drawable/sure_btn" />
-
     </RelativeLayout>
 
 </LinearLayout>

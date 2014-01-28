@@ -45,18 +45,22 @@ public class MainActivity extends Activity {
 	public static final int MESSAGE_RESTART = 3;
 
 	private MediaPlayer mediaPlayer;
-	SurfaceView mainSurfaceView;
+	MainSurfaceView mainSurfaceView;
 	PopupWindow mPopWin;
 	ImageView resumeIV, replayIV;
 	Bundle initial_state;
 	Handler handler = new Handler() {
 		@Override
 		public void handleMessage(Message msg) {
-			System.out.println("Recieve Message " + msg);
+			System.out.println(Game.Constant.GAME_PAUSE);
 			switch (msg.what) {
 			case MESSAGE_NEXTLEVEL:
 			case MESSAGE_RESTART:
-				handler.postDelayed(new ReadyGo(msg.what), 100);
+				if (!Game.Constant.GAME_PAUSE) {
+					handler.postDelayed(new ReadyGo(msg.what), 100);
+				} else {
+					mainSurfaceView.forceRefreshScreen();
+				}
 				break;
 			case MESSAGE_FINISH:
 				handler.post(new ShowScore());
@@ -132,6 +136,7 @@ public class MainActivity extends Activity {
 				@Override
 				public void onClick(View v) {
 					closePopWin();
+					Game.Constant.GAME_PAUSE = false;
 					Message msg = new Message();
 					msg.what = MainActivity.MESSAGE_RESTART;
 					handler.sendMessage(msg);
@@ -177,7 +182,6 @@ public class MainActivity extends Activity {
 
 	@Override
 	protected void onResume() {
-		Game.Constant.GAME_PAUSE = false;
 		if (Game.Constant.GAME_MUSIC_ON) {
 			if (!mediaPlayer.isPlaying()) {
 				startMusic();
@@ -345,6 +349,7 @@ public class MainActivity extends Activity {
 							Timer.getInstance().setRemainingTime(
 									Game.Constant.GAME_REMAIN_TIME);
 						}
+						Game.Constant.GAME_PAUSE = false;
 						onResume();
 						break;
 					}

@@ -309,6 +309,7 @@ public class LevelSelector extends Activity {
 				}
 			});
 
+			scoreListView.setCacheColorHint(0);
 			scoreAdapter = new SimpleAdapter(LevelSelector.this,
 					showHighScoreData, R.layout.score_item, new String[] {
 							"rank", "name", "score" }, new int[] { R.id.rank,

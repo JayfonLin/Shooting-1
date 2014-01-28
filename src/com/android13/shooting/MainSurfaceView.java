@@ -141,4 +141,7 @@ public class MainSurfaceView extends SurfaceView implements Callback, Runnable,
 		return true;
 	}
 
+	public void forceRefreshScreen() {
+		Game.refreshScreen(surfaceHolder, canvas, paint);
+	}
 }
