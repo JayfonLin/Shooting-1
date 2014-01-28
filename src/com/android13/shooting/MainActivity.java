@@ -13,7 +13,6 @@ import android.os.Handler;
 import android.os.Message;
 import android.view.Gravity;
 import android.view.KeyEvent;
-import android.view.SurfaceView;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup.LayoutParams;
@@ -28,7 +27,6 @@ import android.widget.PopupWindow;
 import android.widget.TextView;
 
 import com.android13.shooting.screenItems.Score;
-import com.android13.shooting.screenItems.Timer;
 import com.android13.shooting.sql.Data;
 import com.android13.shooting.sql.SqlOpenHelper;
 
@@ -44,11 +42,14 @@ public class MainActivity extends Activity {
 	public static final int MESSAGE_FINISH = 2;
 	public static final int MESSAGE_RESTART = 3;
 
+	private boolean pause_temp;
 	private MediaPlayer mediaPlayer;
 	MainSurfaceView mainSurfaceView;
 	PopupWindow mPopWin;
 	ImageView resumeIV, replayIV;
 	Bundle initial_state;
+	ReadyGo readyGo;
+
 	Handler handler = new Handler() {
 		@Override
 		public void handleMessage(Message msg) {
@@ -56,10 +57,12 @@ public class MainActivity extends Activity {
 			switch (msg.what) {
 			case MESSAGE_NEXTLEVEL:
 			case MESSAGE_RESTART:
+				mainSurfaceView.forceRefreshScreen();
 				if (!Game.Constant.GAME_PAUSE) {
-					handler.postDelayed(new ReadyGo(msg.what), 100);
-				} else {
-					mainSurfaceView.forceRefreshScreen();
+					if (readyGo == null) {
+						readyGo = new ReadyGo(msg.what);
+					}
+					handler.post(readyGo);
 				}
 				break;
 			case MESSAGE_FINISH:
@@ -115,7 +118,12 @@ public class MainActivity extends Activity {
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
 
 		if (keyCode == KeyEvent.KEYCODE_BACK) {
-			onPause();
+			Game.Constant.GAME_PAUSE = true;
+			if (Game.Constant.GAME_MUSIC_ON) {
+				if (mediaPlayer != null) {
+					mediaPlayer.stop();
+				}
+			}
 
 			LinearLayout popWin_layout = (LinearLayout) MainActivity.this
 					.getLayoutInflater().inflate(R.layout.pause_popwin_layout,
@@ -136,11 +144,16 @@ public class MainActivity extends Activity {
 				@Override
 				public void onClick(View v) {
 					closePopWin();
-					Game.Constant.GAME_PAUSE = false;
 					Message msg = new Message();
 					msg.what = MainActivity.MESSAGE_RESTART;
 					handler.sendMessage(msg);
-					onResume();
+
+					Game.Constant.GAME_PAUSE = false;
+					if (Game.Constant.GAME_MUSIC_ON) {
+						if (!mediaPlayer.isPlaying()) {
+							startMusic();
+						}
+					}
 				}
 			});
 			replayIV = (ImageView) popWin_layout.findViewById(R.id.replayIV);
@@ -159,7 +172,8 @@ public class MainActivity extends Activity {
 	@Override
 	protected void onDestroy() {
 		Game.release(true);
-
+		handler.removeCallbacks(readyGo);
+		readyGo = null;
 		if (Game.Constant.GAME_MUSIC_ON) {
 			if (mediaPlayer != null) {
 				mediaPlayer.stop();
@@ -171,7 +185,11 @@ public class MainActivity extends Activity {
 
 	@Override
 	protected void onPause() {
+		handler.removeCallbacks(readyGo);
+		readyGo = null;
+		pause_temp = Game.Constant.GAME_PAUSE;
 		Game.Constant.GAME_PAUSE = true;
+
 		if (Game.Constant.GAME_MUSIC_ON) {
 			if (mediaPlayer != null) {
 				mediaPlayer.stop();
@@ -182,6 +200,9 @@ public class MainActivity extends Activity {
 
 	@Override
 	protected void onResume() {
+		if (!pause_temp) {
+			Game.Constant.GAME_PAUSE = false;
+		}
 		if (Game.Constant.GAME_MUSIC_ON) {
 			if (!mediaPlayer.isPlaying()) {
 				startMusic();
@@ -293,7 +314,13 @@ public class MainActivity extends Activity {
 		@Override
 		public void run() {
 
-			onPause();
+			Game.Constant.GAME_PAUSE = true;
+			if (Game.Constant.GAME_MUSIC_ON) {
+				if (mediaPlayer != null) {
+					mediaPlayer.stop();
+				}
+			}
+
 			LinearLayout popWin_layout = (LinearLayout) getLayoutInflater()
 					.inflate(R.layout.between_level, null);
 			popupWin = new PopupWindow(popWin_layout,
@@ -345,12 +372,14 @@ public class MainActivity extends Activity {
 						break;
 					case 4:
 						popupWin.dismiss();
-						if (msg == MESSAGE_NEXTLEVEL) {
-							Timer.getInstance().setRemainingTime(
-									Game.Constant.GAME_REMAIN_TIME);
-						}
+
 						Game.Constant.GAME_PAUSE = false;
-						onResume();
+						if (Game.Constant.GAME_MUSIC_ON) {
+							if (!mediaPlayer.isPlaying()) {
+								startMusic();
+							}
+						}
+
 						break;
 					}
 				}

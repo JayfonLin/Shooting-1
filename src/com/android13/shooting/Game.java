@@ -26,7 +26,9 @@ import com.android13.shooting.screenItems.Wind;
 /**
  * 游戏控制类，负责游戏整体的逻辑调度
  * 
- * @author Tiga <liangkangabc@gmail.com>
+ * @author 11331197 林家访 <98905067@qq.com>
+ * @author 11331173 李明宽 <sysu_limingkuan@163.com>
+ * @author 11331185 连凌淦 <839021322@qq.com>
  * 
  */
 public class Game {
@@ -36,15 +38,22 @@ public class Game {
 	private static int level;
 	public static int goal_count = 0;
 
-	// 所有的球的集合
+	/** 所有的球的集合 */
 	public static ArrayList<Ball> balls = new ArrayList<Ball>();
 
-	// 获取当前的关卡
+	/** 获取当前的关卡 */
 	public static int getLevel() {
 		return level;
 	}
 
-	// 游戏初始化
+	/**
+	 * 游戏初始化
+	 * 
+	 * @param activity
+	 *            传入的外层Activity
+	 * @param lv
+	 *            要初始化的关卡
+	 */
 	public static void init(Activity activity, int lv) {
 
 		level = lv;
@@ -55,37 +64,34 @@ public class Game {
 
 		/** 一次加载所有图片资源 */
 		BitmapPool.loadAll(activity);
-		// balls = new ArrayList<Ball>();
 		sortedItems = new ArrayList<ScreenItem>();
 
-		// 加载当前关卡显示图案
+		/** 加载当前关卡显示图案 */
 		sortedItems.add(new LevelNumber(level));
 
-		// 加载游戏背景
+		/** 加载游戏背景 */
 		sortedItems.add(Background.getInstance());
 		sortedItems.add(Backboard.getInstance());
 		sortedItems.add(Hoop.getInstance());
 
-		// 加载风
+		/** 加载风的实例 */
 		sortedItems.add(Wind.getInstance());
 		if (level == 4) {
 			Wind.getInstance().windBegin(Constant.WIND_SPEED);
 		}
-		// System.out.println("IsTrain................." +
-		// Game.Constant.IS_TRAIN);
 
-		// 如果不是训练模式，加载计时器并设置计时器的初始值
+		/** 如果不是训练模式，加载计时器并设置计时器的初始值 */
 		if (!Game.Constant.IS_TRAIN) {
 			sortedItems.add(Timer.getInstance());
-			Timer.getInstance()
-					.setRemainingTime(Game.Constant.GAME_REMAIN_TIME);
+			Timer.getInstance().setRemainingTime(
+					Game.Constant.GAME_REMAIN_TIME + 1);
 		}
-		// 加载分数显示
+		/** 加载分数显示 */
 		sortedItems.add(Score.getInstance());
 
-		// 加载进球提示数字
+		/** 加载进球提示数字 */
 		sortedItems.add(Hint.getInstance());
-		// 三个篮球
+		/** 加载三个篮球 */
 		for (int i = 0; i < 3; i++) {
 			Ball ball = new Ball();
 			sortedItems.add(ball);
@@ -93,6 +99,9 @@ public class Game {
 		}
 	}
 
+	/**
+	 * 挑战模式中
+	 */
 	public static void nextLevel() {
 
 		level++;
